@@ -1,0 +1,79 @@
+CREATE DATABASE IF NOT EXISTS dept;
+USE dept;
+DROP TABLE IF EXISTS `employee`;
+DROP TABLE IF EXISTS `dept`;
+DROP TABLE IF EXISTS `user_roles`;
+DROP TABLE IF EXISTS `users`;
+
+CREATE TABLE `dept` (
+ `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+ `name` varchar(30) NOT NULL,
+ PRIMARY KEY (`id`),
+ UNIQUE KEY `name` (`name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `employee` (
+ `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+ `name` varchar(30) NOT NULL,
+ `birth_date` date NOT NULL,
+ `hire_date` date NOT NULL,
+ `address` varchar(30) NOT NULL,
+ `dept_id` int(3) unsigned NOT NULL,
+ `salary` int(11) unsigned NOT NULL,
+ PRIMARY KEY (`id`),
+ KEY `dept_id` (`dept_id`),
+ CONSTRAINT `employee_ibfk_1` FOREIGN KEY (`dept_id`) REFERENCES `dept` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE  TABLE `users` (
+  `username` varchar(30) NOT NULL,
+  `password` varchar(60) NOT NULL,
+  `email` varchar(30) NOT NULL,
+  `enabled` tinyint(4) NOT NULL DEFAULT '1',
+  PRIMARY KEY (`username`),
+  UNIQUE KEY `email` (`email`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+ 
+CREATE TABLE `user_roles` (
+  `user_role_id` int(11) NOT NULL AUTO_INCREMENT,
+  `username` varchar(45) NOT NULL,
+  `ROLE` varchar(45) NOT NULL,
+  PRIMARY KEY (`user_role_id`),
+  UNIQUE KEY `uni_username_role` (`ROLE`,`username`),
+  KEY `fk_username_idx` (`username`),
+  CONSTRAINT `fk_username` FOREIGN KEY (`username`) REFERENCES `users` (`username`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO dept (name) VALUE ('Sales');
+INSERT INTO dept (name) VALUE ('IT development');
+INSERT INTO dept (name) VALUE ('Implementations');
+INSERT INTO dept (name) VALUE ('Administrative');
+INSERT INTO dept (name) VALUE ('HR');
+INSERT INTO dept (name) VALUE ('Marketing');
+
+INSERT INTO employee (name,birth_date,hire_date,address,dept_id,salary) VALUES ('Oleg Lyashko','1972-11-12', CURRENT_DATE, 'Sumskaya, 40',1,3000);
+INSERT INTO employee (name,birth_date,hire_date,address,dept_id,salary) VALUES ('Arseniy Yatseniuk','1975-09-22', CURRENT_DATE, 'Sumskaya, 30',2,3500);
+INSERT INTO employee (name,birth_date,hire_date,address,dept_id,salary) VALUES ('Petr Poroshenko','1963-07-14', CURRENT_DATE, 'pr.Lenina, 58',3,4000);
+INSERT INTO employee (name,birth_date,hire_date,address,dept_id,salary) VALUES ('Arsen Avakov','1964-01-18', CURRENT_DATE, 'Pushkinskaya, 17',4,4500);
+INSERT INTO employee (name,birth_date,hire_date,address,dept_id,salary) VALUES ('Oleksandr Turchinov','1960-02-13', CURRENT_DATE, 'pr.Gagarina, 167',5,5000);
+INSERT INTO employee (name,birth_date,hire_date,address,dept_id,salary) VALUES ('Anatoliy Gritsenko','1961-03-15', CURRENT_DATE, 'pr.Moskovskiy, 223',3,4900);
+INSERT INTO employee (name,birth_date,hire_date,address,dept_id,salary) VALUES ('Igor Kolomoyskiy','1961-04-19', CURRENT_DATE, 'pr.Lenina, 60',1,4700);
+INSERT INTO employee (name,birth_date,hire_date,address,dept_id,salary) VALUES ('Vitaliy Klichko','1966-05-16', CURRENT_DATE, 'pr.Gagarina, 27',2,4300);
+INSERT INTO employee (name,birth_date,hire_date,address,dept_id,salary) VALUES ('Oleg Tyagnibok','1968-06-03', CURRENT_DATE, 'pr.Moskovskiy, 155',3,4100);
+INSERT INTO employee (name,birth_date,hire_date,address,dept_id,salary) VALUES ('Julia Timoshenko','1962-07-05', CURRENT_DATE, 'Klochkovskaya, 32',4,3900);
+INSERT INTO employee (name,birth_date,hire_date,address,dept_id,salary) VALUES ('Oleksandra Kuzhel','1960-08-07', CURRENT_DATE, 'pr.Kosiora, 45',5,3700);
+INSERT INTO employee (name,birth_date,hire_date,address,dept_id,salary) VALUES ('Nataliya Korolevskaya','1969-09-09', CURRENT_DATE, 'Morozova, 28',2,3600);
+INSERT INTO employee (name,birth_date,hire_date,address,dept_id,salary) VALUES ('Dmitriy Firtash','1964-10-25', CURRENT_DATE, '23 Avgusta, 59',1,3400);
+INSERT INTO employee (name,birth_date,hire_date,address,dept_id,salary) VALUES ('Aleksandr Yaroslavskiy','1962-11-23', CURRENT_DATE, 'Bluhera, 93',2,3200);
+INSERT INTO employee (name,birth_date,hire_date,address,dept_id,salary) VALUES ('Igor Baluta','1967-12-02', CURRENT_DATE, 'Geroev Truda, 43',3,3100);
+INSERT INTO employee (name,birth_date,hire_date,address,dept_id,salary) VALUES ('Semen Semenchenko','1967-01-24', CURRENT_DATE, 'Kosmicheskaya, 10',4,3500);
+INSERT INTO employee (name,birth_date,hire_date,address,dept_id,salary) VALUES ('Tatiana Chornovol','1970-12-29', CURRENT_DATE, 'Kulturi, 17',2,3750);
+INSERT INTO employee (name,birth_date,hire_date,address,dept_id,salary) VALUES ('Taisiya Povaliy','1964-03-31', CURRENT_DATE, 'Mironositskaya, 20',5,4700);
+INSERT INTO employee (name,birth_date,hire_date,address,dept_id,salary) VALUES ('Nestor Shufrich','1963-04-07', CURRENT_DATE, 'Artema, 26',3,4700);
+
+INSERT INTO users (username,password,email,enabled) VALUES ('paul','$2a$10$1fbBTJHh/6U1bGUrOba2uuVtoYARHd4Xe1kayvT6HKqiXMa5AZ.eW', 'paul@mail.ru', TRUE);
+INSERT INTO users (username,password,email,enabled) VALUES ('alex','$2a$10$weLDP4DGWmCXW2sozMnp6OIBbXaLAqSN7RNR9thXg46tyjkcvy5.O', 'alex@ukr.net', TRUE);
+
+INSERT INTO user_roles (username, ROLE) VALUES ('paul', 'ROLE_USER');
+INSERT INTO user_roles (username, ROLE) VALUES ('paul', 'ROLE_ADMIN');
+INSERT INTO user_roles (username, ROLE) VALUES ('alex', 'ROLE_USER');
