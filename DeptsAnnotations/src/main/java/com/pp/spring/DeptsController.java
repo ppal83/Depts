@@ -1,8 +1,6 @@
 package com.pp.spring;
 
 import java.util.Collection;
-import java.util.Locale;
-
 import javax.validation.Valid;
 
 import org.jboss.logging.Logger;
@@ -55,13 +53,27 @@ public class DeptsController {
 	}
 
 	@RequestMapping(value = "/", method = RequestMethod.GET)
-	public String listDepts(Locale locale, Model model) {
+	public String listDepts(Model model) {
 		logger.info("Welcome to home page!");
 		model.addAttribute("dept", new Dept());
 		model.addAttribute("deptsList", deptService.getAllDepts());
 
 		return "home";
 	}
+	
+	@RequestMapping(value = "/dept", method = RequestMethod.GET)
+	public String editDept(@RequestParam("id") int id, Model model) {
+		Dept dept = deptService.getDeptById(id);
+		model.addAttribute("dept", dept);
+		return "dept";
+	}
+	
+	@RequestMapping(value = "/newdept", method = RequestMethod.GET)
+	public String newDept(@ModelAttribute("dept") Dept dept) {
+		deptService.addDept(dept);
+		return "redirect:/";
+	}
+	
 
 	@RequestMapping(value = "/employees", method = RequestMethod.GET)
 	public String listPersons(@RequestParam("id") int id, Model model) {
