@@ -3,7 +3,6 @@ package com.pp.spring;
 import java.util.Collection;
 
 import javax.validation.Valid;
-
 import org.jboss.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -84,12 +83,14 @@ public class DeptsController {
 			return "dept";
 		}
 		
+		/*
 		if (deptService.findByName(dept.getName()) != null) {
 			model.addAttribute("dept", dept);
 			model.addAttribute("error", "Dept already exists");
 			
 			return "dept";
 		}
+		*/
 		deptService.addDept(dept);
 		
 		return "redirect:/";

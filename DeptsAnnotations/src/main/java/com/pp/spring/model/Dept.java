@@ -19,6 +19,8 @@ import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
+import com.pp.spring.validate.UniqueDeptName;
+
 @Entity
 @Table(name = "dept")
 public class Dept {
@@ -29,6 +31,7 @@ public class Dept {
 
 	@Column(name = "name")
 	@Size(min=1, max=30)
+	@UniqueDeptName
 	private String name;
 	
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "dept")
