@@ -9,9 +9,12 @@
 <!DOCTYPE html>
 <html>
 <head>
+
 <link rel="stylesheet"
 	href="<c:url value = "/resources/theme/css/style.css" />">
+	
 <title>Home page</title>
+
 </head>
 <body>
 

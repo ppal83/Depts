@@ -26,23 +26,34 @@
 		<springForm:form id="dept_form" commandName="dept" method="GET">
 			<table>
 				<tr>
-					<td><springForm:label path="id">
+					<td>
+						<springForm:label path="id">
 							<spring:message text="ID" />
-						</springForm:label></td>
-					<td colspan="2"><springForm:input path="id" readonly="true"
-							disabled="true" cssStyle="width: 197px" /> <springForm:hidden
-							path="id" /></td>
+						</springForm:label>
+					</td>
+					<td colspan="2">
+						<springForm:input path="id" readonly="true"
+							disabled="true" cssStyle="width: 197px" /> 
+							<springForm:hidden path="id" />
+					</td>
 				</tr>
 				<tr>
-					<td><springForm:label path="name">
+					<td>
+						<springForm:label path="name">
 							<spring:message text="Department" />
-						</springForm:label></td>
-					<td colspan="2"><springForm:input path="name"
-							cssStyle="width: 197px" /></td>
-					<td><springForm:errors path="name" cssClass="error" /></td>
-					<td><c:if test="${not empty error}">
+						</springForm:label>
+					</td>
+					<td colspan="2">
+						<springForm:input path="name" cssStyle="width: 197px" />
+					</td>
+					<td>
+						<springForm:errors path="name" cssClass="error" />
+					</td>
+					<td>
+						<c:if test="${not empty error}">
 							<div class="error">${error}</div>
-						</c:if></td>
+						</c:if>
+					</td>
 				</tr>
 				<tr>
 					<td><button formaction="newdept">Create new</button></td>
