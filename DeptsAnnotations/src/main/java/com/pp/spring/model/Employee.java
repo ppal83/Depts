@@ -20,6 +20,8 @@ import javax.validation.constraints.Size;
 import org.hibernate.validator.constraints.Email;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import com.pp.spring.validate.UniqueEmpName;
+
 @Entity
 @Table(name = "employee")
 public class Employee {
@@ -30,6 +32,7 @@ public class Employee {
 	
 	@Size(min=2, max=30)
 	@Column(name = "name")
+	@UniqueEmpName
 	private String name;
 	
 	@NotNull @Past

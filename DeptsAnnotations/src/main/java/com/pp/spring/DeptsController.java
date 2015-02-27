@@ -140,7 +140,7 @@ public class DeptsController {
 	@RequestMapping(value= "/employee/add", method = RequestMethod.GET)
 	public String addPerson(@ModelAttribute ("employee") @Valid Employee emp, 
 			BindingResult bindingResult, @RequestParam("deptId") int deptId, Model model) {
-		
+		/*
 		Employee empByName = emplService.findByName(emp.getName());
 		Employee empByEmail = emplService.findByEmail(emp.getEmail());
 		String message = null;		
@@ -155,7 +155,7 @@ public class DeptsController {
 			
 			return "employee";
 		}
-
+		*/
 		if (bindingResult.hasErrors()) {
 			logger.info("Errors found");
 			return "employee";
