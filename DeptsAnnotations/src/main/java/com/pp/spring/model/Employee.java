@@ -17,6 +17,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
 import javax.validation.constraints.Size;
 
+import org.hibernate.validator.constraints.Email;
 import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
@@ -46,6 +47,11 @@ public class Employee {
 	@Size(min=2, max=30)
 	@Column(name = "address")
 	private String address;
+	
+	@Size(min=3, max=30)
+	@Email
+	@Column(name="email")
+	private String email;
 	
 	@ManyToOne
 	@JoinColumn(name = "dept_id")
@@ -107,6 +113,14 @@ public class Employee {
 
 	public void setAddress(String address) {
 		this.address = address;
+	}
+	
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
 	}
 
 	public Dept getDept() {

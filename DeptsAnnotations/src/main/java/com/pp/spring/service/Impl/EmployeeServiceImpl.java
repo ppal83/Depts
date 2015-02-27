@@ -52,4 +52,16 @@ public class EmployeeServiceImpl implements EmployeeService {
 		return employeeDAO.getAllEmployees();
 	}
 
+	@Override
+	@Transactional
+	public Employee findByName(String name) {
+		return employeeDAO.findByName(name);
+	}
+
+	@Override
+	@Transactional
+	public Employee findByEmail(String email) {
+		return employeeDAO.findByEmail(email);
+	}
+
 }

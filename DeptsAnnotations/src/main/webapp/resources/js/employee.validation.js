@@ -14,7 +14,7 @@ $(document).ready(function(){
 			name: {
 				required: true,
 				minlength: 2,
-				maxlength: 30
+				maxlength: 30,
 			},
 			
 			birthDate: {
@@ -34,6 +34,13 @@ $(document).ready(function(){
 				maxlength: 30
 			},
 			
+			email: { 
+				required: true,
+				minlength: 3,
+				maxlength: 30,
+				email: true,
+			},
+			
 			salary: { 
 				required: true,
 				min: 0
@@ -44,7 +51,7 @@ $(document).ready(function(){
 			name: {
 				required: "Name required",
 				minlength: "Name length should be not less than 2 characters",
-				maxlength: "Name length should be not more than 30 characters",
+				maxlength: "Name length should be not more than 30 characters"
 			},
 			
 			birthDate: {
@@ -61,6 +68,13 @@ $(document).ready(function(){
 				required: "Address required",
 				minlength: "Address length should be not less than 2 characters",
 				maxlength: "Address length should be not more than 30 characters",
+			},
+			
+			email: {
+				required: "Email required",
+				minlength: "Email length should be not less than 3 characters",
+				maxlength: "Email length should be not more than 30 characters",
+				email: "Email address is not valid"
 			},
 			
 			salary: {

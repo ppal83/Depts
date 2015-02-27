@@ -50,6 +50,7 @@ public class AppConfig extends WebMvcConfigurerAdapter {
 		prop.put("hibernate.show_sql", "true");
 		prop.put("hibernate.dialect", 
 				"org.hibernate.dialect.MySQL5Dialect");
+		
 		return prop;
 	}
 
@@ -59,6 +60,8 @@ public class AppConfig extends WebMvcConfigurerAdapter {
 		ds.setDriverClassName("com.mysql.jdbc.Driver");
 		ds.setUrl("jdbc:mysql://localhost:3306/dept");
 		ds.setUsername("root");
+		ds.setPassword("");
+
 		return ds;
 	}
 
@@ -75,6 +78,7 @@ public class AppConfig extends WebMvcConfigurerAdapter {
 		viewResolver.setViewClass(JstlView.class);
 		viewResolver.setPrefix("/WEB-INF/views/");
 		viewResolver.setSuffix(".jsp");
+		
 		return viewResolver;
 	}
 	
@@ -83,6 +87,7 @@ public class AppConfig extends WebMvcConfigurerAdapter {
         ReloadableResourceBundleMessageSource resource = new ReloadableResourceBundleMessageSource();
         resource.setBasename("classpath:message");
         resource.setDefaultEncoding("UTF-8");
+        
         return resource;
     }
 

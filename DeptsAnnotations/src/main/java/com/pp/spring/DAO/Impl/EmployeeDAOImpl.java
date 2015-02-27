@@ -71,4 +71,24 @@ public class EmployeeDAOImpl implements EmployeeDAO {
 		return employeesList;
 	}
 
+	@Override
+	public Employee findByName(String name) {
+		Employee emp = null;
+		emp = (Employee) sessionFactory.getCurrentSession()
+				.createQuery("from Employee where name=?")
+				.setParameter(0, name).uniqueResult();
+		
+		return emp;
+	}
+
+	@Override
+	public Employee findByEmail(String email) {
+		Employee emp = null;
+		emp = (Employee) sessionFactory.getCurrentSession()
+				.createQuery("from Employee where email=?")
+				.setParameter(0, email).uniqueResult();
+		
+		return emp;
+	}
+
 }

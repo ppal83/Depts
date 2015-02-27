@@ -13,6 +13,8 @@
 
 <link rel="stylesheet"
 	href="<c:url value = "/resources/theme/css/style.css" />">
+<link rel="stylesheet"
+	href="<c:url value = "/resources/theme/css/messages.css" />">
 
 <script src="<c:url value = "/resources/js/jquery-1.11.2.min.js" />"></script>
 <script src="<c:url value = "/resources/js/jquery.validate.min.js" />"></script>
@@ -33,6 +35,12 @@
 				</c:if>
 				<c:if test="${employee.id eq 0}">
 					<h2>Add employee</h2>
+				</c:if>
+				
+				<c:if test="${not empty error}">
+					<div class="errorMessage">
+						${error}
+					</div>
 				</c:if>
 			
 			<c:url var="addAction" value="/employee/add"></c:url>
@@ -78,6 +86,13 @@
 								</springForm:label></td>
 							<td><springForm:input path="address" /></td>
 							<td><springForm:errors path="address" cssClass="error" /></td>
+						</tr>
+						<tr>
+							<td><springForm:label path="email">
+									<spring:message text="Email" />
+								</springForm:label></td>
+							<td><springForm:input path="email" /></td>
+							<td><springForm:errors path="email" cssClass="error" /></td>
 						</tr>
 						<tr>
 							<td><springForm:label path="dept.name">
@@ -129,6 +144,7 @@
 					<th width="80">Birthday</th>
 					<th width="80">Hireday</th>
 					<th width="140">Address</th>
+					<th width="120">Email</th>
 					<th width="120">Department</th>
 					<th width="60">Salary</th>
 
@@ -145,6 +161,7 @@
 						<td align="center">${employee.birthDate}</td>
 						<td align="center">${employee.hireDate}</td>
 						<td>${employee.address}</td>
+						<td>${employee.email}</td>
 						<td>${employee.dept.name}</td>
 						<td align="center">${employee.salary}</td>
 

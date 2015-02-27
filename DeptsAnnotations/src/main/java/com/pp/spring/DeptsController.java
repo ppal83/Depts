@@ -137,21 +137,36 @@ public class DeptsController {
 
 	//For add and update employee both
 	@RequestMapping(value= "/employee/add", method = RequestMethod.GET)
-	public String addPerson(@ModelAttribute ("employee") @Valid Employee employee, 
-					BindingResult bindingResult, @RequestParam("deptId") int deptId) {
+	public String addPerson(@ModelAttribute ("employee") @Valid Employee emp, 
+			BindingResult bindingResult, @RequestParam("deptId") int deptId, Model model) {
+		
+		Employee empByName = emplService.findByName(emp.getName());
+		Employee empByEmail = emplService.findByEmail(emp.getEmail());
+		String message = null;		
+		
+		if ((empByName != null) || (empByEmail != null)) {
+			if (empByName != null) {
+				message = "Employee <em>" + emp.getName() + "</em> already exists!";
+			} else {
+				message = "Email <em>" + emp.getEmail() + "</em> already exists!";
+			}
+			model.addAttribute("error", message);
+			
+			return "employee";
+		}
 
 		if (bindingResult.hasErrors()) {
 			logger.info("Errors found");
 			return "employee";
 		}
 
-		employee.setDept(deptService.getDeptById(deptId));
-		if(employee.getId() == 0){
+		emp.setDept(deptService.getDeptById(deptId));
+		if(emp.getId() == 0){
 			//new employee
-			emplService.addEmloyee(employee);
+			emplService.addEmloyee(emp);
 		} else {
 			//existing employee
-			emplService.updateEmployee(employee);
+			emplService.updateEmployee(emp);
 		}
 
 		return "redirect:/employees";
@@ -237,9 +252,9 @@ public class DeptsController {
 	
 	//AJAX check methods
 	
-	@RequestMapping(value= "/checkUser", method = RequestMethod.POST)
+	@RequestMapping(value= "/checkUserName", method = RequestMethod.POST)
 	@ResponseBody
-	public String isUserInUse(@RequestParam("username") String username) {
+	public String isUserNameInUse(@RequestParam("username") String username) {
 		if (userService.findByUserName(username) == null) {
 			return "true";
 		}
@@ -247,7 +262,7 @@ public class DeptsController {
 		return "false";
 	}
 	
-	@RequestMapping(value= "/checkEmail", method = RequestMethod.POST)
+	@RequestMapping(value= "/checkUserEmail", method = RequestMethod.POST)
 	@ResponseBody
 	public String isEmailInUse(@RequestParam("email") String email) {
 		if (userService.findByEmail(email) == null) {

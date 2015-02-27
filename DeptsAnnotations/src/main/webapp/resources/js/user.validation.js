@@ -6,7 +6,7 @@ $(document).ready(function(){
 				minlength: 2,
 				maxlength: 30,
 				remote: {
-			        url: "checkUser",
+			        url: "checkUserName",
 			        type: "post",
 			        data: {
 			        	username: function() {
@@ -27,7 +27,7 @@ $(document).ready(function(){
 				maxlength: 30,
 				email: true,
 				remote: {
-			        url: "checkEmail",
+			        url: "checkUserEmail",
 			        type: "post",
 			        data: {
 			        	email: function() {
