@@ -1,6 +1,7 @@
 package com.pp.spring;
 
 import java.util.Collection;
+
 import javax.validation.Valid;
 
 import org.jboss.logging.Logger;
@@ -64,13 +65,55 @@ public class DeptsController {
 	@RequestMapping(value = "/dept", method = RequestMethod.GET)
 	public String editDept(@RequestParam("id") int id, Model model) {
 		Dept dept = deptService.getDeptById(id);
+		if (dept == null) {
+			model.addAttribute("dept", new Dept());
+			model.addAttribute("error", "Please choose department");
+			
+			return "home";
+		}
 		model.addAttribute("dept", dept);
+		
 		return "dept";
 	}
 	
 	@RequestMapping(value = "/newdept", method = RequestMethod.GET)
-	public String newDept(@ModelAttribute("dept") Dept dept) {
+	public String createDept(@ModelAttribute("dept") @Valid Dept dept, 
+								BindingResult bindingResult, Model model) {
+		if (bindingResult.hasErrors()) {
+			logger.info("Errors found");
+			return "dept";
+		}
+		
+		if (deptService.findByName(dept.getName()) != null) {
+			model.addAttribute("dept", dept);
+			model.addAttribute("error", "Dept already exists");
+			
+			return "dept";
+		}
 		deptService.addDept(dept);
+		
+		return "redirect:/";
+	}
+	
+	@RequestMapping(value = "/updatedept", method = RequestMethod.GET)
+	public String updateDept(@ModelAttribute("dept") @Valid Dept dept,
+								BindingResult bindingResult, Model model) {
+		if (bindingResult.hasErrors()) {
+			logger.info("Errors found");
+			return "dept";
+		}
+		
+		deptService.updateDept(dept);
+		
+		return "redirect:/";
+	}
+	
+	@RequestMapping(value = "/deletedept", method = RequestMethod.GET)
+	public String deleteDept(@ModelAttribute("dept") Dept dept) {
+		for (Employee e : deptService.getDeptById(dept.getId()).getEmps()) {
+			emplService.deleteEmployee(e);
+		}
+		deptService.deleteDept(dept);
 		return "redirect:/";
 	}
 	
@@ -95,7 +138,7 @@ public class DeptsController {
 	//For add and update employee both
 	@RequestMapping(value= "/employee/add", method = RequestMethod.GET)
 	public String addPerson(@ModelAttribute ("employee") @Valid Employee employee, 
-			BindingResult bindingResult, @RequestParam("deptId") int deptId) {
+					BindingResult bindingResult, @RequestParam("deptId") int deptId) {
 
 		if (bindingResult.hasErrors()) {
 			logger.info("Errors found");
@@ -130,21 +173,25 @@ public class DeptsController {
 
 	@RequestMapping(value="/login")
 	public String login(){
+		
 		return "login";
 	}
 
 	@RequestMapping(value="/logout")
 	public String logout(){
+		
 		return "/";
 	}
 
 	@RequestMapping(value="/denied")
 	public String denied(){
+		
 		return "denied";
 	}
 	
 	@RequestMapping(value="/permission")
 	public String permission(){
+		
 		return "permission";
 	}
 	
@@ -160,42 +207,43 @@ public class DeptsController {
 	public String registerUser(@ModelAttribute ("user") @Valid User user, 
 			BindingResult bindingResult, Model model) {
 
+		User usrByName = userService.findByUserName(user.getUsername());
+		User usrByEmail = userService.findByEmail(user.getEmail());
+		String message = null;		
+		
+		if ((usrByName != null) || (usrByEmail != null)) {
+			if (usrByName != null) {
+				message = "User <em>" + user.getUsername() + "</em> already exists!";
+			} else {
+				message = "Email <em>" + user.getEmail() + "</em> already exists!";
+			}
+			user.setPassword("");
+			model.addAttribute("error", message);
+			
+			return "registration";
+		} 
+		
 		if (bindingResult.hasErrors()) {
 			logger.info("Errors found");
+			
 			return "registration";
 		}
 		
-		model.addAttribute("message", "success");
-		
-		try {
 		userService.addUser(user);
-		} catch (Exception e) {
-			logger.info("Exception occured " + e.getMessage());
-			user.setPassword("");
-			model.addAttribute("error", duplicateError(e.getCause().toString()));
-			return "registration";
-		}
+		model.addAttribute("message", "success");
 		
 		return "login";
 	}
 	
-	//server-side check whether user or email already exists in database
-	private String duplicateError(String cause) {
-		String[] tokens = cause.split("'");
-		String result = null;
-		if (tokens[1].contains("@"))
-			result = "Email <em>" + tokens[1] + "</em> already exists!";
-		else result = "User <em>" + tokens[1] + "</em> already exists!";
-		return result;
-	}
+	//AJAX check methods
 	
-	//AJAX check whether user or email already exists in database
 	@RequestMapping(value= "/checkUser", method = RequestMethod.POST)
 	@ResponseBody
 	public String isUserInUse(@RequestParam("username") String username) {
 		if (userService.findByUserName(username) == null) {
 			return "true";
 		}
+		
 		return "false";
 	}
 	
@@ -205,6 +253,7 @@ public class DeptsController {
 		if (userService.findByEmail(email) == null) {
 			return "true";
 		}
+		
 		return "false";
 	}
 }

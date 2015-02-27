@@ -10,6 +10,7 @@ public interface DeptService {
 	void deleteDept(Dept dept);
 	void updateDept(Dept dept);
 	Dept getDeptById(int id);
+	Dept findByName(String name);
 	void deleteDeptById(int id);
 	List<Dept> getAllDepts();
 

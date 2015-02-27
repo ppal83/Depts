@@ -71,4 +71,14 @@ public class DeptDAOImpl implements DeptDAO {
 		return deptsList;
 	}
 
+	@Override
+	public Dept findByName(String name) {
+		Dept dept = null;
+		dept = (Dept) sessionFactory.getCurrentSession()
+				.createQuery("from Dept where name=?")
+				.setParameter(0, name).uniqueResult();
+		
+		return dept;
+	}
+
 }

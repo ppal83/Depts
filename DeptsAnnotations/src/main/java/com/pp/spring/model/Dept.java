@@ -12,6 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
+import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -27,6 +28,7 @@ public class Dept {
 	private int id;
 
 	@Column(name = "name")
+	@Size(min=1, max=30)
 	private String name;
 	
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "dept")

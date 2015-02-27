@@ -56,14 +56,18 @@
 					<td><button formaction="employees">View</button></td>
 				</tr>
 				<sec:authorize access="hasRole('ROLE_ADMIN')">
-				<tr>
-					<td colspan="2">
-						<button formaction="dept" style="width: 100%">Edit /
-							add dept</button>
-					</td>
-				</tr>
+					<tr>
+						<td colspan="2">
+							<button formaction="dept" style="width: 100%">Select dept
+							to edit</button>
+						</td>
+					</tr>
 				</sec:authorize>
 			</table>
+
+			<c:if test="${not empty error}">
+				<div class="error">${error}</div>
+			</c:if>
 		</springForm:form>
 
 	</section>

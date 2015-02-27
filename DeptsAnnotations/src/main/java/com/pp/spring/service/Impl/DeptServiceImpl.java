@@ -52,4 +52,10 @@ public class DeptServiceImpl implements DeptService{
 		return deptDAO.getAllDepts();
 	}
 
+	@Override
+	@Transactional
+	public Dept findByName(String name) {
+		return deptDAO.findByName(name);
+	}
+
 }
