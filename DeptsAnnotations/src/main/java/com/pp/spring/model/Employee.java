@@ -20,6 +20,7 @@ import javax.validation.constraints.Size;
 import org.hibernate.validator.constraints.Email;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import com.pp.spring.validate.UniqueEmpEmail;
 import com.pp.spring.validate.UniqueEmpName;
 
 @Entity
@@ -54,6 +55,7 @@ public class Employee {
 	@Size(min=3, max=30)
 	@Email
 	@Column(name="email")
+	@UniqueEmpEmail
 	private String email;
 	
 	@ManyToOne
@@ -146,6 +148,6 @@ public class Employee {
 	public String toString() {
 		return "Employee [id = " + id + ", name = " + name + ", birthDate = "
 				+ birthDate + ", hireDate = " + hireDate + ", address = " + address
-				+ ", deptId = " + dept.getId() + ", salary = " + salary + "]";
+				+ ", dept = " + dept + ", salary = " + salary + "]";
 	}
 }

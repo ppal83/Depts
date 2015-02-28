@@ -3,18 +3,24 @@ package com.pp.spring.service.Impl;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.Validator;
 
 import com.pp.spring.DAO.DeptDAO;
 import com.pp.spring.model.Dept;
 import com.pp.spring.service.DeptService;
 
 @Service("deptService")
-public class DeptServiceImpl implements DeptService{
+public class DeptServiceImpl implements DeptService {
 	
-	@Autowired
+	@Autowired(required=true)
+	@Qualifier(value="deptDAO")
 	private DeptDAO deptDAO;
+	
+	 @Autowired
+	    private Validator validator;
 
 	@Override
 	@Transactional

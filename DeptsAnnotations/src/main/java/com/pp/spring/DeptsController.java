@@ -1,14 +1,19 @@
 package com.pp.spring;
 
 import java.util.Collection;
+import java.util.Map;
 
 import javax.validation.Valid;
+
 import org.jboss.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
+import org.springframework.validation.Validator;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,7 +21,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
-
 import com.pp.spring.model.Dept;
 import com.pp.spring.model.Employee;
 import com.pp.spring.model.User;
@@ -29,11 +33,11 @@ import com.pp.spring.service.UserService;
 public class DeptsController {
 
 	private static final Logger logger = Logger.getLogger(DeptsController.class);
-	
+
 	private EmployeeService emplService;
 	private DeptService deptService;
 	private UserService userService;
-	
+
 	@Autowired(required=true)
 	@Qualifier(value="emplService")
 	public void setEmplService(EmployeeService emplService){
@@ -45,12 +49,15 @@ public class DeptsController {
 	public void setDeptService(DeptService deptService){
 		this.deptService = deptService;
 	}
-	
+
 	@Autowired(required=true)
 	@Qualifier(value="userService")
 	public void setUserService(UserService userService){
 		this.userService = userService;
 	}
+
+	@Autowired
+	private Validator validator;
 
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public String listDepts(Model model) {
@@ -60,55 +67,99 @@ public class DeptsController {
 
 		return "home";
 	}
-	
+
 	@RequestMapping(value = "/dept", method = RequestMethod.GET)
 	public String editDept(@RequestParam("id") int id, Model model) {
 		Dept dept = deptService.getDeptById(id);
 		if (dept == null) {
 			model.addAttribute("dept", new Dept());
 			model.addAttribute("error", "Please choose department");
-			
+
 			return "home";
 		}
 		model.addAttribute("dept", dept);
-		
+
 		return "dept";
 	}
-	
+
 	@RequestMapping(value = "/newdept", method = RequestMethod.GET)
 	public String createDept(@ModelAttribute("dept") @Valid Dept dept, 
-								BindingResult bindingResult, Model model) {
+			BindingResult bindingResult, Model model) {
 		if (bindingResult.hasErrors()) {
 			logger.info("Errors found");
 			return "dept";
 		}
-		
+
 		/*
 		if (deptService.findByName(dept.getName()) != null) {
 			model.addAttribute("dept", dept);
 			model.addAttribute("error", "Dept already exists");
-			
+
 			return "dept";
 		}
-		*/
+		 */
+
+		System.out.println("CREAAATIIIIING DEPT!!!!!111******************************" + dept);
+		System.out.println("WIT DEPT SERVICEEEEEEEEEEE****************" + deptService);
 		deptService.addDept(dept);
-		
+
 		return "redirect:/";
 	}
-	
+
 	@RequestMapping(value = "/updatedept", method = RequestMethod.GET)
 	public String updateDept(@ModelAttribute("dept") @Valid Dept dept,
-								BindingResult bindingResult, Model model) {
+			BindingResult bindingResult, Model model) {
 		if (bindingResult.hasErrors()) {
+			System.out.println("Field errors:" + bindingResult.getFieldErrorCount());
+			System.out.println("Errors list:" + bindingResult.getAllErrors());
+			System.out.println("Model type:" + bindingResult.getModel());
+
+			Map<String, Object> map = bindingResult.getModel();
+			System.out.println("MMMMAAAAAAAAAAAAAAPPPP::: " + map);
+			int i = 1;
+			for (String key : map.keySet()) {
+				System.out.print(i++ + " ");
+				System.out.println(key);
+			}
+			i = 1;
+			for (Object obj : map.values()) {
+				System.out.print(i++ + " ");
+				System.out.println(obj);
+			}
+
+
+
+			System.out.println("NAME FIELD ERROR + " + bindingResult.getFieldError("name").getCode());
+
+			if ("UniqueDeptName".equals(bindingResult.getFieldError("name").getCode())) {
+				bindingResult = new BeanPropertyBindingResult(dept, "dept");
+			}
+
+			map = bindingResult.getModel();
+			System.out.println("NEEEEEEEEWW  MMMMAAAAAAAAAAAAAAPPPP::: " + map);
+			i = 1;
+			for (String key : map.keySet()) {
+				System.out.print(i++ + " ");
+				System.out.println(key);
+			}
+			i = 1;
+			for (Object obj : map.values()) {
+				System.out.print(i++ + " ");
+				System.out.println(obj);
+			}
+
+			model.addAllAttributes(bindingResult.getModel());
+
+
 			logger.info("Errors found");
 			return "dept";
 		}
-		
+
 		deptService.updateDept(dept);
-		
+
 		return "redirect:/";
 	}
-	
+
 	@RequestMapping(value = "/deletedept", method = RequestMethod.GET)
 	public String deleteDept(@ModelAttribute("dept") Dept dept) {
 		for (Employee e : deptService.getDeptById(dept.getId()).getEmps()) {
@@ -117,7 +168,7 @@ public class DeptsController {
 		deptService.deleteDept(dept);
 		return "redirect:/";
 	}
-	
+
 
 	@RequestMapping(value = "/employees", method = RequestMethod.GET)
 	public String listPersons(@RequestParam("id") int id, Model model) {
@@ -144,7 +195,7 @@ public class DeptsController {
 		Employee empByName = emplService.findByName(emp.getName());
 		Employee empByEmail = emplService.findByEmail(emp.getEmail());
 		String message = null;		
-		
+
 		if ((empByName != null) || (empByEmail != null)) {
 			if (empByName != null) {
 				message = "Employee <em>" + emp.getName() + "</em> already exists!";
@@ -152,13 +203,77 @@ public class DeptsController {
 				message = "Email <em>" + emp.getEmail() + "</em> already exists!";
 			}
 			model.addAttribute("error", message);
-			
+
 			return "employee";
 		}
-		*/
+		 */
 		if (bindingResult.hasErrors()) {
-			logger.info("Errors found");
-			return "employee";
+
+
+			System.out.println("Field errors:" + bindingResult.getFieldErrorCount());
+			System.out.println("Errors list:" + bindingResult.getAllErrors());
+			System.out.println("Model type:" + bindingResult.getModel());
+
+			Map<String, Object> map = bindingResult.getModel();
+			System.out.println("MMMMAAAAAAAAAAAAAAPPPP::: " + map);
+			int i = 1;
+			for (String key : map.keySet()) {
+				System.out.print(i++ + " ");
+				System.out.println(key);
+			}
+			i = 1;
+			for (Object obj : map.values()) {
+				System.out.print(i++ + " ");
+				System.out.println(obj);
+			}
+
+
+			ObjectError oe1 = bindingResult.getFieldError("name");
+			ObjectError oe2 = bindingResult.getFieldError("email");
+
+			/*
+			System.out.println("GETID::::::::::: " + emp.getId());
+			System.out.println("EQUALS::::::::::: " + oe1.getCode().equals("UniqueEmpName"));
+			 */
+
+			BindingResult result;
+
+			if( (emp.getId() != 0) && (oe1.getCode().equals("UniqueEmpName") ||
+					oe2.getCode().equals("UniqueEmpEmail")) ) {
+				System.out.println("INSIDEEEEEE*****");
+				result = new BeanPropertyBindingResult(emp, "employee");
+				System.out.println("LIST OF ERRORS SIZE:: " + bindingResult.getAllErrors().size());
+				for (ObjectError objectError : bindingResult.getAllErrors()) {
+					System.out.println("ITERATING OVER ERRORS " + objectError + " code: " + objectError.getCode());
+					if ( !(objectError.equals(oe1) || objectError.equals(oe2)) )
+						result.addError(objectError);
+				}
+				bindingResult = result;
+			}
+
+			System.out.println("***********aFTERT OPERATIONS");
+			System.out.println("Field errors:" + bindingResult.getFieldErrorCount());
+			System.out.println("Errors list:" + bindingResult.getAllErrors());
+			System.out.println("Model type:" + bindingResult.getModel());
+
+			map = bindingResult.getModel();
+			System.out.println("MMMMAAAAAAAAAAAAAAPPPP::: " + map);
+			i = 1;
+			for (String key : map.keySet()) {
+				System.out.print(i++ + " ");
+				System.out.println(key);
+			}
+			i = 1;
+			for (Object obj : map.values()) {
+				System.out.print(i++ + " ");
+				System.out.println(obj);
+			}
+
+			if ( bindingResult.hasErrors() ) {
+				model.addAllAttributes(bindingResult.getModel());
+				logger.info("Errors found");
+				return "employee";
+			}
 		}
 
 		emp.setDept(deptService.getDeptById(deptId));
@@ -176,49 +291,49 @@ public class DeptsController {
 	@RequestMapping("/remove/{id}")
 	public String removePerson(@PathVariable("id") int id, Model model){
 		emplService.deleteEmployeeById(id);
-		
+
 		return "redirect:/employees";
 	}
 
 	@RequestMapping("/edit/{id}")
 	public String editPerson(@PathVariable("id") int id, Model model) {
 		model.addAttribute("employee", emplService.getEmployeeById(id));
-		
+
 		return "employee";
 	}
 
 	@RequestMapping(value="/login")
 	public String login(){
-		
+
 		return "login";
 	}
 
 	@RequestMapping(value="/logout")
 	public String logout(){
-		
+
 		return "/";
 	}
 
 	@RequestMapping(value="/denied")
 	public String denied(){
-		
+
 		return "denied";
 	}
-	
+
 	@RequestMapping(value="/permission")
 	public String permission(){
-		
+
 		return "permission";
 	}
-	
+
 	@RequestMapping(value="/registration")
 	public String registartion(Model model){
-		
+
 		model.addAttribute("user", new User());
-		
+
 		return "registration";
 	}
-	
+
 	@RequestMapping(value= "/register", method = RequestMethod.POST)
 	public String registerUser(@ModelAttribute ("user") @Valid User user, 
 			BindingResult bindingResult, Model model) {
@@ -226,7 +341,7 @@ public class DeptsController {
 		User usrByName = userService.findByUserName(user.getUsername());
 		User usrByEmail = userService.findByEmail(user.getEmail());
 		String message = null;		
-		
+
 		if ((usrByName != null) || (usrByEmail != null)) {
 			if (usrByName != null) {
 				message = "User <em>" + user.getUsername() + "</em> already exists!";
@@ -235,41 +350,41 @@ public class DeptsController {
 			}
 			user.setPassword("");
 			model.addAttribute("error", message);
-			
+
 			return "registration";
 		} 
-		
+
 		if (bindingResult.hasErrors()) {
 			logger.info("Errors found");
-			
+
 			return "registration";
 		}
-		
+
 		userService.addUser(user);
 		model.addAttribute("message", "success");
-		
+
 		return "login";
 	}
-	
+
 	//AJAX check methods
-	
+
 	@RequestMapping(value= "/checkUserName", method = RequestMethod.POST)
 	@ResponseBody
 	public String isUserNameInUse(@RequestParam("username") String username) {
 		if (userService.findByUserName(username) == null) {
 			return "true";
 		}
-		
+
 		return "false";
 	}
-	
+
 	@RequestMapping(value= "/checkUserEmail", method = RequestMethod.POST)
 	@ResponseBody
 	public String isEmailInUse(@RequestParam("email") String email) {
 		if (userService.findByEmail(email) == null) {
 			return "true";
 		}
-		
+
 		return "false";
 	}
 }

@@ -6,7 +6,6 @@ import javax.validation.ConstraintValidatorContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
-import com.pp.spring.model.Employee;
 import com.pp.spring.service.EmployeeService;
 
 public class EmpNameValidator implements ConstraintValidator<UniqueEmpName, String>{
@@ -21,11 +20,8 @@ public class EmpNameValidator implements ConstraintValidator<UniqueEmpName, Stri
 
 	@Override
 	public boolean isValid(String name, ConstraintValidatorContext context) {
-		if(name == null) return true;
-		Employee emp = emplService.findByName(name);
-		if (emp != null) return false;
-
-		return true;
+		if(emplService == null) return true;
+		return emplService.findByName(name) == null;
 	}
 
 }

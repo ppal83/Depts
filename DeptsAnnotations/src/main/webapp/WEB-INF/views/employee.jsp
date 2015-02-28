@@ -15,11 +15,11 @@
 	href="<c:url value = "/resources/theme/css/style.css" />">
 <link rel="stylesheet"
 	href="<c:url value = "/resources/theme/css/messages.css" />">
-
+<!-- 
 <script src="<c:url value = "/resources/js/jquery-1.11.2.min.js" />"></script>
 <script src="<c:url value = "/resources/js/jquery.validate.min.js" />"></script>
 <script src="<c:url value = "/resources/js/employee.validation.js" />"></script>
-
+-->
 </head>
 <body>
 	<%@ include file="/resources/jspfs/Header.jspf"%>
@@ -47,7 +47,7 @@
 			
 				<springForm:form id="empl_form" action="${addAction}" commandName="employee"
 					method="GET">
-					<table>
+					<table border="1">
 						<c:if test="${employee.id ne 0}">
 							<tr>
 								<td><springForm:label path="id">

@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 import com.pp.spring.DAO.DeptDAO;
 import com.pp.spring.model.Dept;
 
-@Repository
+@Repository("deptDAO")
 public class DeptDAOImpl implements DeptDAO {
 
 	private static final Logger logger = Logger.getLogger(DeptDAOImpl.class);
