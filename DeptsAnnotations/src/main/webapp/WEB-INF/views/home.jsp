@@ -46,7 +46,8 @@
 			<h2>Employee list</h2>
 
 			<p>You can view our employee list by different departments or a
-				full employee list(choosing 'All departments').</p>
+				full employee list(choosing 'All departments'). If you have
+				an admin access you can edit departments list also.</p>
 
 			<table>
 				<tr>
@@ -61,8 +62,8 @@
 				<sec:authorize access="hasRole('ROLE_ADMIN')">
 					<tr>
 						<td colspan="2">
-							<button formaction="dept" style="width: 100%">Select dept
-							to edit</button>
+							<button formaction="depts" style="width: 100%">Customize
+							dept list</button>
 						</td>
 					</tr>
 				</sec:authorize>

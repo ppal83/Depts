@@ -37,13 +37,13 @@ public class Employee {
 	private String name;
 	
 	@NotNull @Past
-	@DateTimeFormat(pattern="yyyy-MM-dd")
+	@DateTimeFormat(pattern="yyyy-MMMM-dd")
 	@Temporal(TemporalType.DATE)
 	@Column(name = "birth_date")
 	private Date birthDate;
 
 	@NotNull
-	@DateTimeFormat(pattern="yyyy-MM-dd")
+	@DateTimeFormat(pattern="yyyy-MMMM-dd")
 	@Temporal(TemporalType.DATE)
 	@Column(name = "hire_date")
 	private Date hireDate;

@@ -15,11 +15,11 @@
 	href="<c:url value = "/resources/theme/css/style.css" />">
 <link rel="stylesheet"
 	href="<c:url value = "/resources/theme/css/messages.css" />">
-<!-- 
+
 <script src="<c:url value = "/resources/js/jquery-1.11.2.min.js" />"></script>
 <script src="<c:url value = "/resources/js/jquery.validate.min.js" />"></script>
 <script src="<c:url value = "/resources/js/employee.validation.js" />"></script>
--->
+
 </head>
 <body>
 	<%@ include file="/resources/jspfs/Header.jspf"%>
@@ -47,7 +47,7 @@
 			
 				<springForm:form id="empl_form" action="${addAction}" commandName="employee"
 					method="GET">
-					<table border="1">
+					<table>
 						<c:if test="${employee.id ne 0}">
 							<tr>
 								<td><springForm:label path="id">
@@ -166,10 +166,12 @@
 						<td align="center">${employee.salary}</td>
 
 						<sec:authorize access="hasRole('ROLE_ADMIN')">
-							<td align="center"><a
-								href="<c:url value="/edit/${employee.id}" />">Edit</a></td>
-							<td align="center"><a
-								href="<c:url value="/remove/${employee.id}" />">Delete</a></td>
+							<td align="center">
+								<a href="<c:url value="/employee/edit/${employee.id}" />"><button>Edit</button></a>
+							</td>
+							<td align="center">
+								<a href="<c:url value="/employee/remove/${employee.id}" />"><button>Delete</button></a>
+							</td>
 						</sec:authorize>
 
 					</tr>
