@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 import com.pp.spring.DAO.EmployeeDAO;
 import com.pp.spring.model.Employee;
 
-@Repository
+@Repository("employeeDAO")
 public class EmployeeDAOImpl implements EmployeeDAO {
 
 	private static final Logger logger = Logger.getLogger(EmployeeDAOImpl.class);

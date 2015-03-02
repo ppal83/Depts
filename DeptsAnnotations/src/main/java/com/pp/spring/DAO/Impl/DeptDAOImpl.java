@@ -2,8 +2,10 @@ package com.pp.spring.DAO.Impl;
 
 import java.util.List;
 
+import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Order;
 import org.jboss.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -11,7 +13,7 @@ import org.springframework.stereotype.Repository;
 import com.pp.spring.DAO.DeptDAO;
 import com.pp.spring.model.Dept;
 
-@Repository
+@Repository("deptDAO")
 public class DeptDAOImpl implements DeptDAO {
 
 	private static final Logger logger = Logger.getLogger(DeptDAOImpl.class);
@@ -65,7 +67,10 @@ public class DeptDAOImpl implements DeptDAO {
 	@Override
 	public List<Dept> getAllDepts() {
 		Session session = sessionFactory.getCurrentSession();
-		List<Dept> deptsList = session.createCriteria(Dept.class).list();
+		//List<Dept> deptsList = session.createCriteria(Dept.class).list();
+		Criteria cr = session.createCriteria(Dept.class);
+		cr.addOrder(Order.asc("id"));
+		List<Dept> deptsList = cr.list();
 		logger.info("Depts list was loaded successfully. Depts list: " + deptsList);
 
 		return deptsList;

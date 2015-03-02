@@ -49,37 +49,37 @@ $(document).ready(function(){
 
 		messages: {
 			name: {
-				required: "Name required",
-				minlength: "Name length should be not less than 2 characters",
-				maxlength: "Name length should be not more than 30 characters"
+				required: "Name required(cl-side)",
+				minlength: "Name length should be not less than 2 characters(cl-side)",
+				maxlength: "Name length should be not more than 30 characters(cl-side)"
 			},
 			
 			birthDate: {
-				required: "Birthday date required",
-				dateISO: "Birthday date is not well formed"
+				required: "Birthday date required(cl-side)",
+				dateISO: "Birthday date is not well formed(cl-side)"
 			},
 			
 			hireDate: {
-				required: "Hire date required",
-				dateISO: "Hire date is not well formed"
+				required: "Hire date required(cl-side)",
+				dateISO: "Hire date is not well formed(cl-side)"
 			},
 			
 			address: {
-				required: "Address required",
-				minlength: "Address length should be not less than 2 characters",
-				maxlength: "Address length should be not more than 30 characters",
+				required: "Address required(cl-side)",
+				minlength: "Address length should be not less than 2 characters(cl-side)",
+				maxlength: "Address length should be not more than 30 characters(cl-side)",
 			},
 			
 			email: {
-				required: "Email required",
-				minlength: "Email length should be not less than 3 characters",
-				maxlength: "Email length should be not more than 30 characters",
-				email: "Email address is not valid"
+				required: "Email required(cl-side)",
+				minlength: "Email length should be not less than 3 characters(cl-side)",
+				maxlength: "Email length should be not more than 30 characters(cl-side)",
+				email: "Email address is not valid(cl-side)"
 			},
 			
 			salary: {
-				required: "Salary required",
-				min: "Wrong Salary"
+				required: "Salary required(cl-side)",
+				min: "Wrong Salary(cl-side)"
 			}
 		}
 	});

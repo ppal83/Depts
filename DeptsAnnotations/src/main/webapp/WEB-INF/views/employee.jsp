@@ -166,10 +166,12 @@
 						<td align="center">${employee.salary}</td>
 
 						<sec:authorize access="hasRole('ROLE_ADMIN')">
-							<td align="center"><a
-								href="<c:url value="/edit/${employee.id}" />">Edit</a></td>
-							<td align="center"><a
-								href="<c:url value="/remove/${employee.id}" />">Delete</a></td>
+							<td align="center">
+								<a href="<c:url value="/employee/edit/${employee.id}" />"><button>Edit</button></a>
+							</td>
+							<td align="center">
+								<a href="<c:url value="/employee/remove/${employee.id}" />"><button>Delete</button></a>
+							</td>
 						</sec:authorize>
 
 					</tr>

@@ -12,7 +12,7 @@
 <link rel="stylesheet"
 	href="<c:url value = "/resources/theme/css/style.css" />">
 
-<title>Home page</title>
+<title>Depts list</title>
 </head>
 <body>
 
@@ -23,45 +23,71 @@
 	<section>
 
 		<p></p>
-		<springForm:form id="dept_form" commandName="dept" method="GET">
+
+		<c:if test="${dept.id ne 0}">
+			<h2>Edit dept</h2>
+		</c:if>
+		<c:if test="${dept.id eq 0}">
+			<h2>Add dept</h2>
+		</c:if>
+
+		<c:url var="addAction" value="/dept/add"></c:url>
+
+		<springForm:form id="dept_form" action="${addAction}"
+			commandName="dept" method="GET">
 			<table>
+				<c:if test="${dept.id ne 0}">
+					<tr>
+						<td><springForm:label path="id">
+								<spring:message text="ID" />
+							</springForm:label></td>
+						<td><springForm:input path="id" readonly="true"
+								disabled="true" /> <springForm:hidden path="id" /></td>
+					</tr>
+				</c:if>
 				<tr>
-					<td>
-						<springForm:label path="id">
-							<spring:message text="ID" />
-						</springForm:label>
-					</td>
-					<td colspan="2">
-						<springForm:input path="id" readonly="true"
-							disabled="true" cssStyle="width: 197px" /> 
-							<springForm:hidden path="id" />
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<springForm:label path="name">
+					<td><springForm:label path="name">
 							<spring:message text="Department" />
-						</springForm:label>
-					</td>
-					<td colspan="2">
-						<springForm:input path="name" cssStyle="width: 197px" />
-					</td>
-					<td>
-						<springForm:errors path="name" cssClass="error" />
-					</td>
-					<td>
-						<c:if test="${not empty error}">
-							<div class="error">${error}</div>
-						</c:if>
-					</td>
+						</springForm:label></td>
+					<td><springForm:input path="name" /></td>
+					<td><springForm:errors path="name" cssClass="error" /></td>
 				</tr>
 				<tr>
-					<td><button formaction="newdept">Create new</button></td>
-					<td><button formaction="updatedept">Update current</button></td>
-					<td><button formaction="deletedept">Delete current</button></td>
+					<td colspan="2"><c:if test="${dept.id ne 0}">
+							<input type="submit" style="width: 230px"
+								value="<spring:message text="Edit existing dept"/>" />
+						</c:if> <c:if test="${dept.id eq 0}">
+							<input type="submit" style="width: 230px"
+								value="<spring:message text="Create new dept"/>" />
+						</c:if></td>
 				</tr>
 			</table>
 		</springForm:form>
+
+		<p></p>
+		<table class="tbl">
+			<tr>
+				<th width="40" align="center">Dept ID</th>
+				<th width="160">Dept name</th>
+				<th width="60">Edit</th>
+				<th width="60">Delete</th>
+				<th width="60">View</th>
+			</tr>
+			<c:forEach items="${deptsList}" var="dept">
+				<tr>
+					<td align="center">${dept.id}</td>
+					<td>${dept.name}</td>
+					<td align="center">
+						<a href="<c:url value="/dept/edit/${dept.id}" />"><button>Edit</button></a>
+					</td>
+					<td align="center">
+						<a href="<c:url value="/dept/remove/${dept.id}" />"><button>Delete</button></a></td>
+					<td align="center">
+						<a href="<c:url value="/employees?id=${dept.id}" />"><button>View</button></a></td>
+				</tr>
+			</c:forEach>
+
+		</table>
 
 		<h4>
 			<a href="<c:url value="/" />" class="back">Back to Main Page</a>

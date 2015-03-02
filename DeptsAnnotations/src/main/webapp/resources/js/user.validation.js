@@ -40,23 +40,23 @@ $(document).ready(function(){
 		
 		messages: {
 			username: {
-				required: "Username required",
-				minlength: "Username length should be not less than 2 characters",
-				maxlength: "Username length should be not more than 30 characters",
-				remote: $.validator.format("{0} is already in use")
+				required: "Username required(cl-side)",
+				minlength: "Username length should be not less than 2 characters(cl-side)",
+				maxlength: "Username length should be not more than 30 characters(cl-side)",
+				remote: $.validator.format("{0} is already in use(cl-side)")
 			},
 			
 			password: {
-				required: "Password required",
-				minlength: "Password length should be not less than 6 characters"
+				required: "Password required(cl-side)",
+				minlength: "Password length should be not less than 6 characters(cl-side)"
 			},
 			
 			email: {
-				required: "Email required",
-				minlength: "Email length should be not less than 3 characters",
-				maxlength: "Email length should be not more than 30 characters",
-				email: "Email address is not valid",
-				remote: $.validator.format("{0} is already in use")
+				required: "Email required(cl-side)",
+				minlength: "Email length should be not less than 3 characters(cl-side)",
+				maxlength: "Email length should be not more than 30 characters(cl-side)",
+				email: "Email address is not valid(cl-side)",
+				remote: $.validator.format("{0} is already in use(cl-side)")
 			}
 		}
 	});

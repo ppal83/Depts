@@ -14,6 +14,9 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.validator.constraints.Email;
 
+import com.pp.spring.validate.UniqueUserEmail;
+import com.pp.spring.validate.UniqueUserName;
+
 @Entity
 @Table(name = "users")
 public class User {
@@ -21,6 +24,7 @@ public class User {
 	@Id
 	@Size(min=2, max=30)
 	@Column(name="username")
+	@UniqueUserName
 	private String username;
 	
 	@Size(min=6)
@@ -30,6 +34,7 @@ public class User {
 	@Size(min=3, max=30)
 	@Email
 	@Column(name="email")
+	@UniqueUserEmail
 	private String email;
 	
 	@Column(name="enabled")

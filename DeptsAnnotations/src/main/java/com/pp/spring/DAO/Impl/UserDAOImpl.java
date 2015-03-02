@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import com.pp.spring.DAO.UserDAO;
 import com.pp.spring.model.User;
 
-@Repository
+@Repository("userDAO")
 public class UserDAOImpl implements UserDAO {
 	
 	private static final Logger logger = Logger.getLogger(UserDAOImpl.class);

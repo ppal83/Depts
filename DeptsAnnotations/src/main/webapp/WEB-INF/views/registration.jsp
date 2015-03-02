@@ -30,11 +30,6 @@
 
 	<section>
 		<h2>Please provide a user registration data below</h2>
-		<c:if test="${not empty error}">
-			<div class="errorMessage">
-				${error}
-			</div>
-		</c:if>
 
 		<c:url var="registerAction" value="/register"></c:url>
 		<p></p>
