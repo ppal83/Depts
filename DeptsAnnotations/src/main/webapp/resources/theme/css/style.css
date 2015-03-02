@@ -4,6 +4,8 @@ html {
 	-moz-background-size: cover;
 	-o-background-size: cover;
 	background-size: cover;
+	max-width: 1200px;
+	min-width: 900px;
 }
 
 p {
@@ -11,6 +13,7 @@ p {
 }
 
 header {
+	min-width: 1000px;
 	width: 100%;
 	height: 80px;
 	position: fixed;
@@ -48,10 +51,12 @@ aside em {
 }
 
 section {
+	min-width: 1000px;
 	padding: 60px 100px;
 }
 
 footer {
+	min-width: 1000px;
 	height: 20px;
 	width: 100%;
 	position: fixed;
@@ -96,18 +101,4 @@ input[type="password"] {
 
 a:link, a:visited, a:hover, a:active {
  color: blue ;
-}
-
-#spr_small {
-	position: absolute;
-	border: 1px solid grey;
-	top: 19%;
-	left: 6%;
-}
-
-#hib_small {
-	position: absolute;
-	border: 1px solid grey;
-	top: 19%;
-	left: 15%;
 }
