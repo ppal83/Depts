@@ -19,7 +19,7 @@ header {
 	margin: 0 auto;
 	padding: 0;
 	border: 1px solid white;
-	background-color: black;
+	background-color: #003300;
 	color: white;
 	text-align: center;
 }
@@ -59,7 +59,7 @@ footer {
 	bottom: 0px;
 	padding: 5px;
 	border: 1px solid white;
-	background-color: black;
+	background-color: #003300;
 	color: white;
 	text-align: center;
 }
@@ -74,7 +74,7 @@ input[type="password"] {
 }
 
 .tbl th {
-	background-color: black;
+	background-color: #003300;
 	color: white;
 }
 
@@ -96,4 +96,18 @@ input[type="password"] {
 
 a:link, a:visited, a:hover, a:active {
  color: blue ;
+}
+
+#spr_small {
+	position: absolute;
+	border: 1px solid grey;
+	top: 19%;
+	left: 6%;
+}
+
+#hib_small {
+	position: absolute;
+	border: 1px solid grey;
+	top: 19%;
+	left: 15%;
 }

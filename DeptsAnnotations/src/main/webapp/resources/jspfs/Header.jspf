@@ -1,3 +1,8 @@
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <header>
-	<h1>HornsAndHoofs departments staff list</h1>
+	<h1>HornsAndHoofs&reg; departments staff list</h1>
+		<img src="<c:url value="/resources/theme/img/spring_small.png" />"
+			id="spr_small" width="143" height="46" alt="spring_small">
+		<img src="<c:url value="/resources/theme/img/hibernate_small.png" />"
+			id="hib_small" width="143" height="46" alt="hibernate_small">
 </header>
