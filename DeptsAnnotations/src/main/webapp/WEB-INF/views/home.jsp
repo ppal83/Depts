@@ -54,8 +54,6 @@
 					<td><springForm:select path="id" cssStyle="width: 160px">
 							<springForm:options items="${deptsList}" itemValue="id"
 								itemLabel="name" />
-							<springForm:option cssStyle="color:blue" label="All departments"
-								value="0" />
 						</springForm:select></td>
 					<td><button formaction="employees">View</button></td>
 				</tr>
@@ -68,10 +66,6 @@
 					</tr>
 				</sec:authorize>
 			</table>
-
-			<c:if test="${not empty error}">
-				<div class="error">${error}</div>
-			</c:if>
 		</springForm:form>
 
 	</section>

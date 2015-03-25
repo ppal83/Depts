@@ -4,6 +4,7 @@ import java.util.Properties;
 
 import org.apache.commons.dbcp.BasicDataSource;
 import org.hibernate.SessionFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -62,7 +63,7 @@ public class AppConfig extends WebMvcConfigurerAdapter {
 		ds.setDriverClassName("com.mysql.jdbc.Driver");
 		ds.setUrl("jdbc:mysql://localhost:3306/dept");
 		ds.setUsername("root");
-		ds.setPassword("");
+		ds.setPassword("root");
 
 		return ds;
 	}

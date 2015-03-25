@@ -22,7 +22,6 @@ import com.pp.spring.service.DeptService;
 import com.pp.spring.service.EmployeeService;
 
 @Controller
-@SessionAttributes( {"empList", "id", "deptsList"} )
 public class DeptsController {
 
 	private static final Logger logger = Logger.getLogger(DeptsController.class);
@@ -45,13 +44,17 @@ public class DeptsController {
 	@RequestMapping(value = "/depts", method = RequestMethod.GET)
 	public String listDepts(@RequestParam("id") int id, Model model) {
 		Dept dept = deptService.getDeptById(id);
-
+		/*
 		if (dept == null) {
 			model.addAttribute("dept", new Dept());
 		} else {
 			model.addAttribute("dept", dept);
 		}
+		*/
+
+		model.addAttribute("dept", new Dept());
 		model.addAttribute("id", id);
+		model.addAttribute("deptsList", deptService.getAllDepts());
 
 		return "dept";
 	}
@@ -59,6 +62,10 @@ public class DeptsController {
 	@RequestMapping(value= "/dept/add", method = RequestMethod.GET)
 	public String addDept(@ModelAttribute ("dept") @Valid Dept dept, 
 			BindingResult bindingResult, Model model) {
+
+		model.addAttribute("deptsList", deptService.getAllDepts());
+		model.addAttribute("dept", dept);
+		model.addAttribute("id", 0);
 		
 		if (dept.getId() != 0) {
 			bindingResult = editBindingResult(bindingResult, dept);
@@ -85,6 +92,8 @@ public class DeptsController {
 	@RequestMapping("/dept/edit/{id}")
 	public String editDept(@PathVariable("id") int id, Model model) {
 		model.addAttribute("dept", deptService.getDeptById(id));
+		model.addAttribute("deptsList", deptService.getAllDepts());
+		//model.addAttribute("id", id);
 
 		return "dept";
 	}
@@ -95,8 +104,10 @@ public class DeptsController {
 			emplService.deleteEmployee(e);
 		}
 		deptService.deleteDeptById(id);
-
 		model.addAttribute("deptsList", deptService.getAllDepts());
+		model.addAttribute("dept", new Dept());
+		model.addAttribute("id", 0);
+
 		return "redirect:/depts";
 	}
 

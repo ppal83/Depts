@@ -3,6 +3,7 @@ package com.pp.spring;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 import javax.validation.Valid;
 
@@ -29,7 +30,6 @@ import com.pp.spring.service.DeptService;
 import com.pp.spring.service.EmployeeService;
 
 @Controller
-@SessionAttributes( {"empList", "id", "deptsList"} )
 public class EmployeeController {
 
 	private static final Logger logger = Logger.getLogger(EmployeeController.class);
@@ -48,16 +48,10 @@ public class EmployeeController {
 
 	@RequestMapping(value = "/employees", method = RequestMethod.GET)
 	public String listPersons(@RequestParam("id") int id, Model model) {
-		Collection<Employee> empList = null;
-		if (id == 0) {
-			empList = emplService.getAllEmployees();
-		} else {
-			empList = deptService.getDeptById(id).getEmps();
-		}
-		model.addAttribute("employee", new Employee());
+		Collection<Employee> empList = deptService.getDeptById(id).getEmps();
 		model.addAttribute("empList", empList);
-		model.addAttribute("id", id);
-		model.addAttribute("dept", new Dept());
+		model.addAttribute("employee", new Employee());
+		model.addAttribute("deptsList", deptService.getAllDepts());
 
 		return "employee";
 	}
@@ -66,7 +60,12 @@ public class EmployeeController {
 	@RequestMapping(value= "/employee/add", method = RequestMethod.GET)
 	public String addPerson(@ModelAttribute ("employee") @Valid Employee emp,
 			BindingResult bindingResult, @RequestParam("deptId") int deptId, Model model) {
-		
+
+		Collection<Employee> empList = deptService.getDeptById(deptId).getEmps();
+		model.addAttribute("empList", empList);
+		model.addAttribute("id", deptId);
+		model.addAttribute("deptsList", deptService.getAllDepts());
+
 		if (emp.getId() != 0) {
 			bindingResult = editBindingResult(bindingResult, emp);
 			model.addAllAttributes(bindingResult.getModel());
@@ -74,6 +73,7 @@ public class EmployeeController {
 		
 		if (bindingResult.hasErrors()) {
 			logger.info("Errors found");
+
 			return "employee";
 		}
 
@@ -86,20 +86,27 @@ public class EmployeeController {
 			emplService.updateEmployee(emp);
 		}
 
+		//model.addAttribute("id", deptId);
+
 		return "redirect:/employees";
 	}
 
 	@RequestMapping("/employee/edit/{id}")
 	public String editPerson(@PathVariable("id") int id, Model model) {
-		model.addAttribute("employee", emplService.getEmployeeById(id));
+		Employee emp = emplService.getEmployeeById(id);
+		model.addAttribute("employee", emp);
+		Collection<Employee> empList = emp.getDept().getEmps();
+		model.addAttribute("empList", empList);
+		model.addAttribute("deptsList", deptService.getAllDepts());
 
 		return "employee";
 	}
 
 	@RequestMapping("/employee/remove/{id}")
 	public String removePerson(@PathVariable("id") int id, Model model){
-		emplService.deleteEmployeeById(id);
-
+		Employee emp = emplService.getEmployeeById(id);
+		emplService.deleteEmployee(emp);
+		model.addAttribute("id", emp.getDept().getId());
 		return "redirect:/employees";
 	}
 

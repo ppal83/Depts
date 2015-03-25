@@ -18,7 +18,7 @@
 
 <script src="<c:url value = "/resources/js/jquery-1.11.2.min.js" />"></script>
 <script src="<c:url value = "/resources/js/jquery.validate.min.js" />"></script>
-<script src="<c:url value = "/resources/js/employee.validation.js" />"></script>
+<!--<script src="<c:url value = "/resources/js/employee.validation.js" />"></script>-->
 
 </head>
 <body>
@@ -108,7 +108,7 @@
 											<option value="${dept.id}">${dept.name}
 										</c:if>
 									</c:forEach>
-							</select></td>
+							</select> </td>
 						</tr>
 						<tr>
 							<td><springForm:label path="salary">
