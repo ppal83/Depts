@@ -33,29 +33,22 @@ public class DeptsController {
 	private DeptService deptService;
 
 	@RequestMapping(value = "/", method = RequestMethod.GET)
-	public String listDepts(Model model) {
+	public String homePage(Model model) {
 		logger.info("Welcome to home page!");
-		model.addAttribute("dept", new Dept());
+        /*
+        model.addAttribute("dept", new Dept());
 		model.addAttribute("deptsList", deptService.getAllDepts());
-
-		return "home";
+		*/
+        System.out.println("before returning from deptscontroller");
+        return "home";
 	}
 
 	@RequestMapping(value = "/depts", method = RequestMethod.GET)
-	public String listDepts(@RequestParam("id") int id, Model model) {
-		Dept dept = deptService.getDeptById(id);
+	public String listDepts(Model model) {
 		/*
-		if (dept == null) {
-			model.addAttribute("dept", new Dept());
-		} else {
-			model.addAttribute("dept", dept);
-		}
-		*/
-
-		model.addAttribute("dept", new Dept());
-		model.addAttribute("id", id);
+        model.addAttribute("dept", new Dept());
 		model.addAttribute("deptsList", deptService.getAllDepts());
-
+        */
 		return "dept";
 	}
 
@@ -65,8 +58,7 @@ public class DeptsController {
 
 		model.addAttribute("deptsList", deptService.getAllDepts());
 		model.addAttribute("dept", dept);
-		model.addAttribute("id", 0);
-		
+
 		if (dept.getId() != 0) {
 			bindingResult = editBindingResult(bindingResult, dept);
 			model.addAllAttributes(bindingResult.getModel());
@@ -85,7 +77,6 @@ public class DeptsController {
 			deptService.updateDept(dept);
 		}
 
-		model.addAttribute("deptsList", deptService.getAllDepts());
 		return "redirect:/depts";
 	}
 
@@ -93,7 +84,6 @@ public class DeptsController {
 	public String editDept(@PathVariable("id") int id, Model model) {
 		model.addAttribute("dept", deptService.getDeptById(id));
 		model.addAttribute("deptsList", deptService.getAllDepts());
-		//model.addAttribute("id", id);
 
 		return "dept";
 	}
@@ -106,7 +96,6 @@ public class DeptsController {
 		deptService.deleteDeptById(id);
 		model.addAttribute("deptsList", deptService.getAllDepts());
 		model.addAttribute("dept", new Dept());
-		model.addAttribute("id", 0);
 
 		return "redirect:/depts";
 	}
