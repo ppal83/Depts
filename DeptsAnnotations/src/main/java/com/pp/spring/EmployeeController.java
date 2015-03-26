@@ -3,19 +3,13 @@ package com.pp.spring;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
-
-import com.pp.spring.validate.EmployeeValidator;
 import org.jboss.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
 import org.springframework.validation.Validator;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.WebDataBinder;
@@ -65,18 +59,10 @@ public class EmployeeController {
 	public String addPerson(@ModelAttribute ("employee") @Validated Employee emp,
 							BindingResult bindingResult, @RequestParam("deptId") int deptId, Model model) {
 
-		//validator.validate(emp, bindingResult);
-		logger.info("bindingResult:::: " + bindingResult);
-
 		model.addAttribute("id", deptId);
 		emp.setDept(deptService.getDeptById(deptId));
-		/*
-		if (emp.getId() != 0) {
-			bindingResult = editBindingResult(bindingResult, emp);
-			model.addAllAttributes(bindingResult.getModel());
-		}
-		*/
-		if (bindingResult.hasErrors()) {
+
+        if (bindingResult.hasErrors()) {
 			logger.info("Errors found");
 			Collection<Employee> empList = deptService.getDeptById(deptId).getEmps();
 			model.addAttribute("empList", empList);
@@ -116,28 +102,4 @@ public class EmployeeController {
 		return "redirect:/employees";
 	}
 
-	/*Helper method to allow editing existing employee 
-	  without checking it's name and email uniqueness*/
-	private BindingResult editBindingResult(BindingResult original, Employee emp) {
-
-		Employee dbEmp = emplService.getEmployeeById(emp.getId());
-		emp.setBirthDate(dbEmp.getBirthDate()); //workaround to avoid getting incorrect
-		emp.setHireDate(dbEmp.getHireDate());   //date format
-		BindingResult edited = new BeanPropertyBindingResult(emp, "employee");
-
-		for (ObjectError objectError : original.getAllErrors()) {
-			String code = objectError.getCode();
-			if ( code.equals("UniqueEmpName") &&
-					!original.getFieldValue("name").equals(dbEmp.getName()) ) {
-				edited.addError(objectError);
-			} else if ( (code.equals("UniqueEmpEmail") &&
-					!original.getFieldValue("email").equals(dbEmp.getEmail())) ) {
-				edited.addError(objectError);
-			} else if ( !(code.equals("UniqueEmpName") || code.equals("UniqueEmpEmail")) ) {
-				edited.addError(objectError);
-			}
-		}
-
-		return edited;
-	}
 }

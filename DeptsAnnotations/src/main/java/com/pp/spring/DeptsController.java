@@ -1,15 +1,11 @@
 package com.pp.spring;
 
-import javax.validation.Valid;
 import org.jboss.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
 import org.springframework.validation.Validator;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.WebDataBinder;
@@ -18,9 +14,6 @@ import com.pp.spring.model.Dept;
 import com.pp.spring.model.Employee;
 import com.pp.spring.service.DeptService;
 import com.pp.spring.service.EmployeeService;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 @Controller
 public class DeptsController {
@@ -59,12 +52,6 @@ public class DeptsController {
 	public String addDept(@ModelAttribute ("dept") @Validated Dept dept,
 			BindingResult bindingResult, Model model) {
 
-
-		if (dept.getId() != 0) {
-			bindingResult = editBindingResult(bindingResult, dept);
-			model.addAllAttributes(bindingResult.getModel());
-		}
-
 		if (bindingResult.hasErrors()) {
 			logger.info("Errors found");
 			model.addAttribute("deptsList", deptService.getAllDepts());
@@ -99,27 +86,6 @@ public class DeptsController {
 		deptService.deleteDeptById(id);
 
 		return "redirect:/depts";
-	}
-
-
-
-	//Helper method to allow editing existing dept without checking it's name uniqueness
-	private BindingResult editBindingResult(BindingResult original, Dept dept) {
-		
-		Dept dbDept = deptService.getDeptById(dept.getId());
-		BindingResult edited = new BeanPropertyBindingResult(dept, "dept");
-
-		for (ObjectError objectError : original.getAllErrors()) {
-			String code = objectError.getCode();
-			if ( code.equals("UniqueDeptName") && 
-					!original.getFieldValue("name").equals(dbDept.getName()) ) {
-				edited.addError(objectError);
-			} else if ( !code.equals("UniqueDeptName") ) {
-				edited.addError(objectError);
-			}
-		}
-
-		return edited;
 	}
 
 }

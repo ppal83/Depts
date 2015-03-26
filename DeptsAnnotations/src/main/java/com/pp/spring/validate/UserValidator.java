@@ -22,11 +22,13 @@ public class UserValidator implements Validator {
     @Override
     public void validate(Object target, Errors errors) {
 
-        if (userService.findByUserName( ((User)target).getUsername()) != null ) {
+        User user = (User) target;
+
+        if (userService.findByUserName(user.getUsername()) != null ) {
             errors.rejectValue("username", "existingUserName", new Object[]{"'username'"},
                     "User with this name already exists");
         }
-        if (userService.findByEmail(((User) target).getEmail()) != null ) {
+        if (userService.findByEmail(user.getEmail()) != null ) {
             errors.rejectValue("email", "existingUserEmail", new Object[]{"'email'"},
                     "User with this email already exists");
         }

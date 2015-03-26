@@ -2,20 +2,13 @@ package com.pp.spring.model;
 
 import java.util.HashSet;
 import java.util.Set;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.validation.constraints.Size;
-
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
-import org.hibernate.validator.constraints.Email;
-
-import com.pp.spring.validate.UniqueUserEmail;
-import com.pp.spring.validate.UniqueUserName;
 
 @Entity
 @Table(name = "users")

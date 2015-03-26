@@ -22,10 +22,33 @@ public class EmployeeValidator implements Validator {
     @Override
     public void validate(Object target, Errors errors) {
 
-        if (emplService.findByName( ((Employee)target).getName()) != null ) {
-            errors.rejectValue("name", "existingEmpName", new Object[]{"'name'"},
+        Employee formEmp = (Employee) target;
+        Employee dbEmpByName = emplService.findByName(formEmp.getName());
+        Employee dbEmpByEmail = emplService.findByEmail(formEmp.getEmail());
+        Employee dbEmpById = emplService.getEmployeeById(formEmp.getId());
+
+        if (formEmp.getId() == 0 && dbEmpByName != null) {
+            errors.rejectValue("name", "existingEmpName1", new Object[]{"'name'"},
                     "Employee with this name already exists");
         }
+
+        if ( formEmp.getId() != 0 && dbEmpByName != null
+                && !dbEmpByName.getName().equals(dbEmpById.getName()) ) {
+            errors.rejectValue("name", "existingEmpName2", new Object[]{"'name'"},
+                    "Cannot change to existing employee name");
+        }
+
+        if (formEmp.getId() == 0 && dbEmpByEmail != null) {
+            errors.rejectValue("email", "existingEmpEmail1", new Object[]{"'email'"},
+                    "Employee with this email already exists");
+        }
+
+        if ( formEmp.getId() != 0 && dbEmpByEmail != null
+                && !dbEmpByEmail.getName().equals(dbEmpById.getName()) ) {
+            errors.rejectValue("email", "existingEmpEmail2", new Object[]{"'email'"},
+                    "Cannot change to existing employee email");
+        }
+
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "name", "empName.required");
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "birthDate", "birthDate.required");
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "hireDate", "hireDate.required");
