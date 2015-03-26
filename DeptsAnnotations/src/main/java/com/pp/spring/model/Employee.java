@@ -31,38 +31,29 @@ public class Employee {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int id;
 	
-	@Size(min=2, max=30)
 	@Column(name = "name")
-	@UniqueEmpName
 	private String name;
 	
-	@NotNull @Past
 	@DateTimeFormat(pattern="yyyy-MMMM-dd")
 	@Temporal(TemporalType.DATE)
 	@Column(name = "birth_date")
 	private Date birthDate;
 
-	@NotNull
 	@DateTimeFormat(pattern="yyyy-MMMM-dd")
 	@Temporal(TemporalType.DATE)
 	@Column(name = "hire_date")
 	private Date hireDate;
 
-	@Size(min=2, max=30)
 	@Column(name = "address")
 	private String address;
 	
-	@Size(min=3, max=30)
-	@Email
 	@Column(name="email")
-	@UniqueEmpEmail
 	private String email;
 	
 	@ManyToOne
 	@JoinColumn(name = "dept_id")
 	private Dept dept;
 	
-	@NotNull @Min(0)
 	@Column(name = "salary")
 	private Integer salary;
 	

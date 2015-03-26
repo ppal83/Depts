@@ -19,9 +19,6 @@ public class DeptServiceImpl implements DeptService {
 	@Qualifier(value="deptDAO")
 	private DeptDAO deptDAO;
 	
-	 @Autowired
-	    private Validator validator;
-
 	@Override
 	@Transactional
 	public void addDept(Dept dept) {

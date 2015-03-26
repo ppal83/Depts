@@ -3,6 +3,8 @@ package com.pp.spring.configuration;
 import java.util.Properties;
 
 import com.pp.spring.interceptors.DeptInterceptor;
+import com.pp.spring.interceptors.EmployeeInterceptor;
+import com.pp.spring.validate.EmployeeValidator;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,6 +20,8 @@ import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.servlet.config.annotation.*;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.JstlView;
+
+import javax.validation.Valid;
 
 @Configuration
 @EnableWebMvc
@@ -40,10 +44,17 @@ public class AppConfig extends WebMvcConfigurerAdapter {
         return new DeptInterceptor();
     }
 
+	@Bean
+	public EmployeeInterceptor emplInterceptor() {
+		return new EmployeeInterceptor();
+	}
+
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(deptInterceptor())
                 .addPathPatterns("/", "/depts");
+		registry.addInterceptor(emplInterceptor())
+				.addPathPatterns("/employees");
     }
 
 	@Bean
@@ -93,7 +104,8 @@ public class AppConfig extends WebMvcConfigurerAdapter {
 		
 		return viewResolver;
 	}
-	
+
+
 	@Bean(name = "messageSource")
     public ReloadableResourceBundleMessageSource getMessageSource() {
         ReloadableResourceBundleMessageSource resource = new ReloadableResourceBundleMessageSource();
@@ -102,13 +114,12 @@ public class AppConfig extends WebMvcConfigurerAdapter {
         
         return resource;
     }
-	
+
+
 	@Bean
     public Validator validator() {
         final LocalValidatorFactoryBean validator = new LocalValidatorFactoryBean();
         validator.setValidationMessageSource(getMessageSource());
         return validator;
     }
-
-	
 }

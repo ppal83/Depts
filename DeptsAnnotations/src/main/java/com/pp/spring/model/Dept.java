@@ -30,8 +30,6 @@ public class Dept {
 	private int id;
 
 	@Column(name = "name")
-	@Size(min=1, max=30)
-	@UniqueDeptName
 	private String name;
 	
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "dept")

@@ -1,25 +1,26 @@
 package com.pp.spring;
 
 import javax.validation.Valid;
-
 import org.jboss.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.SessionAttributes;
-
+import org.springframework.validation.Validator;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.*;
 import com.pp.spring.model.Dept;
 import com.pp.spring.model.Employee;
 import com.pp.spring.service.DeptService;
 import com.pp.spring.service.EmployeeService;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 @Controller
 public class DeptsController {
@@ -32,43 +33,45 @@ public class DeptsController {
 	@Autowired
 	private DeptService deptService;
 
-	@RequestMapping(value = "/", method = RequestMethod.GET)
-	public String homePage(Model model) {
-		logger.info("Welcome to home page!");
-        /*
-        model.addAttribute("dept", new Dept());
-		model.addAttribute("deptsList", deptService.getAllDepts());
-		*/
-        System.out.println("before returning from deptscontroller");
-        return "home";
+	@Autowired
+	@Qualifier("deptValidator")
+	private Validator validator;
+
+	@InitBinder
+	public void initBinder(WebDataBinder binder) {
+		binder.setValidator(validator);
 	}
 
-	@RequestMapping(value = "/depts", method = RequestMethod.GET)
-	public String listDepts(Model model) {
-		/*
-        model.addAttribute("dept", new Dept());
-		model.addAttribute("deptsList", deptService.getAllDepts());
-        */
+	@RequestMapping(value = "/")
+	public String homePage() {
+		logger.info("Welcome to home page!");
+
+		return "home";
+	}
+
+	@RequestMapping(value = "/depts")
+	public String listDepts() {
+
 		return "dept";
 	}
 
 	@RequestMapping(value= "/dept/add", method = RequestMethod.GET)
-	public String addDept(@ModelAttribute ("dept") @Valid Dept dept, 
+	public String addDept(@ModelAttribute ("dept") @Validated Dept dept,
 			BindingResult bindingResult, Model model) {
 
-		model.addAttribute("deptsList", deptService.getAllDepts());
-		model.addAttribute("dept", dept);
 
 		if (dept.getId() != 0) {
 			bindingResult = editBindingResult(bindingResult, dept);
 			model.addAllAttributes(bindingResult.getModel());
 		}
-		
+
 		if (bindingResult.hasErrors()) {
 			logger.info("Errors found");
+			model.addAttribute("deptsList", deptService.getAllDepts());
+
 			return "dept";
 		}
-		
+
 		if(dept.getId() == 0){
 			//new dept
 			deptService.addDept(dept);
@@ -89,16 +92,16 @@ public class DeptsController {
 	}
 
 	@RequestMapping("/dept/remove/{id}")
-	public String removeDept(@PathVariable("id") int id, Model model){
+	public String removeDept(@PathVariable("id") int id){
 		for (Employee e : deptService.getDeptById(id).getEmps()) {
 			emplService.deleteEmployee(e);
 		}
 		deptService.deleteDeptById(id);
-		model.addAttribute("deptsList", deptService.getAllDepts());
-		model.addAttribute("dept", new Dept());
 
 		return "redirect:/depts";
 	}
+
+
 
 	//Helper method to allow editing existing dept without checking it's name uniqueness
 	private BindingResult editBindingResult(BindingResult original, Dept dept) {
@@ -118,4 +121,5 @@ public class DeptsController {
 
 		return edited;
 	}
+
 }

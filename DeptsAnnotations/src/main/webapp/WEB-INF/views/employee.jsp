@@ -53,8 +53,8 @@
 								<td><springForm:label path="id">
 										<spring:message text="ID" />
 									</springForm:label></td>
-								<td><springForm:input path="id" readonly="true"
-										disabled="true" /> <springForm:hidden path="id" /></td>
+								<td><springForm:input path="id" readonly="true" disabled="true"/>
+									<springForm:hidden path="id" /></td>
 							</tr>
 						</c:if>
 						<tr>

@@ -22,19 +22,13 @@ import com.pp.spring.validate.UniqueUserName;
 public class User {
 
 	@Id
-	@Size(min=2, max=30)
 	@Column(name="username")
-	@UniqueUserName
 	private String username;
 	
-	@Size(min=6)
 	@Column(name="password")
 	private String password;
 	
-	@Size(min=3, max=30)
-	@Email
 	@Column(name="email")
-	@UniqueUserEmail
 	private String email;
 	
 	@Column(name="enabled")
