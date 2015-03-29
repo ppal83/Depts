@@ -1,0 +1,61 @@
+html {
+    background: url(../img/exchange_mod.png) no-repeat center center fixed;
+    webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+}
+
+body {
+    padding-top: 3em;
+    padding-bottom: 3em;
+    background: none;
+}
+
+table td {
+    padding: 5px;
+}
+
+.cust {
+    width: 100%;
+}
+
+.login-form-caption {
+    font-weight: bold;
+}
+
+.new-user,
+.registered-user {
+    padding-top: 10px;
+}
+
+.new-user-reg,
+.registered-user-log {
+    font-weight: bold;
+    font-style: italic;
+}
+
+.navbar-text-user {
+    color: #fff !important;
+}
+
+.footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    /* Set the fixed height of the footer here */
+    height: 30px;
+    background-color: #222;
+    border-color:#080808;
+}
+.footer .text-muted {
+    position: absolute;
+    width: 12em;
+    top: 50%;
+    margin-top: -0.625em;
+    left: 50%;
+    margin-left: -6em;
+    text-align: center;
+    color:#9d9d9d;
+}
