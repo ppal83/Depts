@@ -1,0 +1,5 @@
+<footer class="footer">
+    <div class="footer-container">
+        <p class="text-muted">Bootstrap&reg; test theme</p>
+    </div>
+</footer>
