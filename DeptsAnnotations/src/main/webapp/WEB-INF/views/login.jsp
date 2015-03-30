@@ -6,13 +6,17 @@
 
     <title>Login Page</title>
 
+    <%@ include file="/resources/jspfs/imports.jspf"%>
+
+
 </head>
 
 <body>
 
-<%@ include file="/resources/jspfs/BSHeader.jspf" %>
-
 <div class="container">
+
+    <%@ include file="/resources/jspfs/header.jspf" %>
+
     <h2>Login with Username and Password</h2>
 
     <c:if test="${message eq 'success'}">
@@ -50,7 +54,7 @@
         <a href="<c:url value="/registration" />"><span class="new-user-reg">register</span></a>
     </div>
 
-    <%@ include file="/resources/jspfs/BSFooter.jspf" %>
+    <%@ include file="/resources/jspfs/footer.jspf" %>
 
 </div>
 

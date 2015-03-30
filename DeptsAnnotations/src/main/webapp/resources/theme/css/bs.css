@@ -12,6 +12,11 @@ body {
     background: none;
 }
 
+.txt-emph {
+    font-style: italic;
+    font-weight: bold;
+}
+
 table td {
     padding: 5px;
 }
@@ -39,16 +44,38 @@ table td {
     color: #fff !important;
 }
 
+.depts-table,
+.empls-table {
+    margin-top: 15px;
+}
+
+.depts-table th,
+.empls-table th {
+    text-align: center;
+}
+
+.depts-table td,
+.empls-table td {
+    text-align: center;
+    vertical-align: middle;
+}
+
+.error {
+    color: red;
+    font-weight: bold;
+    font-style: italic;
+}
+
 .footer {
     position: fixed;
     bottom: 0;
     left: 0;
     right: 0;
-    /* Set the fixed height of the footer here */
     height: 30px;
     background-color: #222;
     border-color:#080808;
 }
+
 .footer .text-muted {
     position: absolute;
     width: 12em;

@@ -1,31 +1,28 @@
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-	pageEncoding="ISO-8859-1"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec"%>
 <!DOCTYPE html>
+
 <html>
+
 <head>
-<link rel="stylesheet"
-	href="<c:url value = "/resources/theme/css/style.css" />">
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Error 404</title>
+
+	<title>Error 404</title>
+
+	<%@ include file="/resources/jspfs/imports.jspf"%>
+
 </head>
+
 <body>
 
-	<%@ include file="/resources/jspfs/Header.jspf"%>
+<div class="container">
 
-	<aside></aside>
+	<%@ include file="/resources/jspfs/header.jspf"%>
 
-	<section>
-		<h2>Resource not found</h2>
-		<h3>Error 404</h3>
-		
-		<h4>
-			<a href="<c:url value="/" />" class="back">To Main Page</a>
-		</h4>
-	</section>
+	<h2>Resource not found</h2>
+	<h3>Error 404</h3>
 
-	<%@ include file="/resources/jspfs/Footer.jspf"%>
+	<%@ include file="/resources/jspfs/footer.jspf"%>
+
+</div>
 
 </body>
+
 </html>

@@ -1,32 +1,30 @@
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-	pageEncoding="ISO-8859-1"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec"%>
 <!DOCTYPE html>
+
 <html>
+
 <head>
-<link rel="stylesheet"
-	href="<c:url value = "/resources/theme/css/style.css" />">
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Error 500</title>
+
+	<title>Error 500</title>
+
+	<%@ include file="/resources/jspfs/imports.jspf"%>
+
 </head>
+
 <body>
 
-	<%@ include file="/resources/jspfs/Header.jspf"%>
 
-	<aside></aside>
 
-	<section>
-		<h2>Internal server error</h2>
-		<h3>Error 500</h3>
-		
-		<h4>
-			<a href="<c:url value="/" />" class="back">To Main Page</a>
-		</h4>
-		
-	</section>
+<div class="container">
 
-	<%@ include file="/resources/jspfs/Footer.jspf"%>
+	<%@ include file="/resources/jspfs/header.jspf"%>
+
+	<h2>Internal server error</h2>
+	<h3>Error 500</h3>
+
+	<%@ include file="/resources/jspfs/footer.jspf"%>
+
+</div>
 
 </body>
+
 </html>

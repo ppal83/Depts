@@ -1,26 +1,27 @@
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-	pageEncoding="ISO-8859-1"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <!DOCTYPE html>
+
 <html>
+
 <head>
-<link rel="stylesheet"
-	href="<c:url value = "/resources/theme/css/style.css" />">
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Insert title here</title>
+
+	<title>Insert title here</title>
+
+	<%@ include file="/resources/jspfs/imports.jspf"%>
+
 </head>
+
 <body>
 
-	<%@ include file="/resources/jspfs/Header.jspf"%>
+<div class="container">
 
-	<%@ include file="/resources/jspfs/aside.jspf"%>
+	<%@ include file="/resources/jspfs/header.jspf"%>
 
-	<section>
-		<h2>You have no permission to access this URL!</h2>
-		<h4><a href="<c:url value="/login" />">Back</a></h4>
-	</section>
+	<h2>You have no permission to access this URL!</h2>
 
-	<%@ include file="/resources/jspfs/Footer.jspf"%>
+</div>
+
+<%@ include file="/resources/jspfs/footer.jspf"%>
 
 </body>
+
 </html>

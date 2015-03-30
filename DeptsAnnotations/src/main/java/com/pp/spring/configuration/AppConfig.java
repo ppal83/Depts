@@ -115,11 +115,4 @@ public class AppConfig extends WebMvcConfigurerAdapter {
         return resource;
     }
 
-
-	@Bean
-    public Validator validator() {
-        final LocalValidatorFactoryBean validator = new LocalValidatorFactoryBean();
-        validator.setValidationMessageSource(getMessageSource());
-        return validator;
-    }
 }
