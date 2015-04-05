@@ -35,14 +35,44 @@
     <div class = "ajax-query"></div>
 
     <script>
+
+        var SupportObject = Class.extend({
+
+            init: function (name) {
+                this.name = name;
+            },
+
+            mysubscribe: function(event) {
+                jQuery(this).bind(event, function() {
+                    alert("kyky");
+                });
+            },
+
+            subscribe: function(event, fx, scope) {
+                jQuery(this).on(event, $.proxy(fx, scope));
+            },
+
+            fire: function(event, data) {
+                $(this).trigger(event, data);
+            }
+
+        });
+
+        var so = new SupportObject("new SO!");
+
+        so.subscribe("ajaxComplete", function() {
+            alert(this.name);
+        }, so);
+
+        so.mysubscribe("ajaxSend");
+
         var $div = $(".ajax-query");
-        alert($div);
 
         $.getJSON("../rest/emp/dummy", function(data) {
-            alert("got JSON object: " + data);
             $div.html(data.name);
             alert(JSON.stringify(data));
         });
+
     </script>
 
     <table class="table table-bordered table-hover depts-table">
