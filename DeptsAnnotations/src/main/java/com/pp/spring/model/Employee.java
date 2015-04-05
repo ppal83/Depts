@@ -11,6 +11,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.DateSerializer;
 import org.springframework.format.annotation.DateTimeFormat;
 
 
@@ -78,6 +81,7 @@ public class Employee {
 		this.name = name;
 	}
 
+    @JsonSerialize(using=DateSerializer.class)
 	public Date getBirthDate() {
 		return birthDate;
 	}
@@ -86,6 +90,7 @@ public class Employee {
 		this.birthDate = birthDate;
 	}
 
+    @JsonSerialize(using=DateSerializer.class)
 	public Date getHireDate() {
 		return hireDate;
 	}

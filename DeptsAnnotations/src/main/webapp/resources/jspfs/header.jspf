@@ -7,22 +7,7 @@
     <div>
         <ul class="nav navbar-nav">
             <li class="active"><a href="<c:url value="/" />">Home</a></li>
-            <sec:authorize access="isAnonymous()">
-                <c:if test="${requestScope['javax.servlet.forward.servlet_path'] eq '/'}">
-                    <li><a href="<c:url value="/login" />">Login</a></li>
-                    <li><a href="<c:url value="/registration" />">Register</a></li>
-                </c:if>
-            </sec:authorize>
-            <sec:authorize access="isAuthenticated()">
-                <li><a href="<c:url value="/logout" />">Logout</a></li>
-            </sec:authorize>
         </ul>
     </div>
-
-    <sec:authorize access="isAuthenticated()">
-        <div class="navbar-right">
-            <p class="navbar-text navbar-text-user">Logged in as [${pageContext.request.userPrincipal.name}]&nbsp;</p>
-        </div>
-    </sec:authorize>
 
 </nav>

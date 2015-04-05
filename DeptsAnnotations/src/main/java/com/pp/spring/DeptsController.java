@@ -35,7 +35,7 @@ public class DeptsController {
 		binder.setValidator(validator);
 	}
 
-	@RequestMapping(value = "/")
+	@RequestMapping(value = "/xxxxxxx")
 	public String homePage() {
 		logger.info("Welcome to home page!");
 
