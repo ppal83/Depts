@@ -32,7 +32,7 @@
 
     <h2>List of departments</h2>
 
-    <div class = "ajax-depts-table"></div>
+    <div class = "depts-table"></div>
 
     <script>
 
@@ -63,6 +63,7 @@
             fireUpdate: function() {
                 this.fire("updated");
             },
+
 
             subscribeToUpdate: function(fx, scope) {
                 this.subscribe('updated', fx, scope);
@@ -101,17 +102,25 @@
             init: function(name, data, opts) {
                 this._super(name, data);
                 this.opts = opts;
+                this._currentRow = 0;
+                this.subscribeToUpdate();
             },
 
             setOpts: function(opts) {
-              this.opts = opts;
+                this.opts = opts;
             },
 
-            createTable: function($container) {
-                this.$container = $container;
+            subscribeToUpdate: function() {
+                this._super(function() {
+                    this.draw()
+                }, this);
+            },
+
+            createTable: function() {
+                this.$container = this.opts.$container;
                 this.$table = $("<table>");
 
-                this.$table.addClass("table table-bordered table-hover depts-table");
+                this.$table.addClass(this.opts.classes);
                 this.$container.append(this.$table);
             },
 
@@ -126,6 +135,7 @@
                 });
 
                 this.$table.append($tr);
+                this._currentRow++;
 
             },
 
@@ -138,41 +148,37 @@
                     $tr.append( $td.html(element[key]) );
                 }
 
+                this.addButtons($tr);
+
                 this.$table.append($tr);
+                this._currentRow++;
             },
 
-            draw: function($container) {
+            addButtons: function($tr) {
+                var btns = this.opts.buttons;
+                if (!btns) return;
+                for (var i = 0; i < btns.length; i++) {
+                    var button = btns[i];
+                    var $btn = $("<a>").addClass(button.classes)
+                            .html(button.value)
+                            .attr("href", button.href + "/" + this._currentRow)
+                            .click(button.onclick);
+                    var $td = $("<td>");
+                    $td.append($btn);
+                    $tr.append($td);
+                }
+            },
 
-                this.createTable($container);
+            draw: function() {
+                this.createTable();
+
                 this.addHeader();
 
-                /*
-                 var self = this;
-
-                 alert("this.dataArray = " + this.dataArray);
-
-                 $(this.dataArray).each(function(index, item) {
-                 self.$tr = $("<tr>");
-                 self.$td = $("<td>").html(item.id);
-                 self.$tr.append(self.$td);
-                 self.$td = $("<td>").html(item.name);
-                 self.$tr.append(self.$td);
-                 self.$table.append(self.$tr);
-
-                 });
-                 */
                 $.each( this.dataArray, $.proxy(function (i, e) {
                     this.addRow(e);
                 }, this) );
 
-
-                //this.$container.html("asdasdasdasdas");
-                //alert("this.$container = " + this.$container.get(0).outerHTML);
-
                 this.$container.append(this.$table);
-                //alert("this.$container = " + this.$container.get(0));
-                //alert("this.$container = " + this.$container.get(0).outerHTML);
-
             }
 
         });
@@ -180,15 +186,41 @@
         $(document).ready(function() {
 
             var tDrawer = new TableDrawer("TDrawer");
+
             tDrawer.setOpts({
-               headers: ['Dept ID', 'Dept name', 'Edit', 'Delete', 'View']
+                $container: $(".depts-table"),
+                classes: "table table-bordered table-hover depts-table",
+                headers: ['Dept ID', 'Dept name', 'Edit', 'Delete', 'View'],
+                buttons: [
+                    {
+                        value: "Edit",
+                        classes: "btn btn-sm btn-primary",
+                        href: "/rest/dept/edit"
+                    },
 
+                    {
+                        value: "Delete",
+                        classes: "btn btn-sm btn-danger",
+                        href: "../rest/dept/delete",
+                        onclick: function() {
+                            $.getJSON("../rest/dept/delete/1", function(data) {
+                               return false;
+                            });
+
+                        }
+                    },
+
+                    {
+                        value: "View",
+                        classes: "btn btn-sm btn-primary",
+                        href: "kyky_eshe"
+                    }]
             });
-
-            tDrawer.subscribeToUpdate(function() {
-                tDrawer.draw( $(".ajax-depts-table") )
-            }, tDrawer);
-
+            /*
+             tDrawer.subscribeToUpdate(function() {
+             tDrawer.draw();
+             }, tDrawer);
+             */
 
             $.getJSON("../rest/depts", function(data) {
                 tDrawer.setData(data);
@@ -198,7 +230,7 @@
 
     </script>
 
-    <table class="table table-bordered table-hover depts-table">
+    <table class="table table-bordered table-hover">
 
 
 

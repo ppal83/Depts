@@ -6,8 +6,9 @@ import com.pp.spring.service.DeptService;
 import org.jboss.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.Calendar;
@@ -22,7 +23,7 @@ public class RestController {
     @Autowired
     private DeptService deptService;
 
-    @RequestMapping(value= "/rest/emp/dummy", method = RequestMethod.GET)
+    @RequestMapping("/rest/emp/dummy")
     public @ResponseBody Employee getDummyEmployee() {
         logger.debug("Returning dummy employee JSON object");
 
@@ -33,13 +34,22 @@ public class RestController {
         return emp;
     }
 
-    @RequestMapping(value= "/rest/depts", method = RequestMethod.GET)
+    @RequestMapping("/rest/depts")
     public @ResponseBody List<Dept> getDeptsList() {
         logger.debug("Returning depts list JSON object");
 
         List<Dept> deptsList = deptService.getAllDepts();
 
         return deptsList;
+    }
+
+    @RequestMapping("/rest/dept/delete/{id}")
+    public @ResponseBody boolean deleteDept(@PathVariable("id") int id) {
+        logger.debug("Deleting dept id = " + id);
+
+        deptService.deleteDeptById(id);
+
+        return true;
     }
 
 }
