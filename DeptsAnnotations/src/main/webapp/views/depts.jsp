@@ -32,7 +32,11 @@
 
     <h2>List of departments</h2>
 
-    <div class = "depts-table"></div>
+    <div class ="tables-container"></div>
+
+    <div class ="emps-container"></div>
+
+    <div class ="forms-container"></div>
 
     <script>
 
@@ -52,13 +56,16 @@
 
         });
 
-        var DataSource = SupportObject.extend({
+        var AjaxQueriesSupportObject = Class.extend({
 
-            init: function (name, data) {
-                this._super(name);
-                arguments[1] ? this.dataArray = data : this.dataArray = [];
-                this._index = 0;
-            },
+            getAllDepts:1
+
+
+        });
+
+
+
+        var DataSource = SupportObject.extend({
 
             fireUpdate: function() {
                 this.fire("updated");
@@ -66,218 +73,239 @@
 
 
             subscribeToUpdate: function(fx, scope) {
-                this.subscribe('updated', fx, scope);
+                this.subscribe("updated", fx, scope);
             },
 
             setData: function (data) {
                 this.dataArray = data;
-                this.fireUpdate();
-            },
-
-            hasNext: function() {
-                return this._index < this.dataArray.length;
-            },
-
-            next: function() {
-                return this.hasNext() ? this.dataArray[this._index++] : null;
-            },
-
-            shift: function () {
-                return this.dataArray.shift();
-            },
-
-            _resetIndex: function() {
-                this._index = 0;
             },
 
             clear: function () {
-                this._resetIndex();
                 this.dataArray = [];
             }
 
         });
 
+
+        //----------------------------------------------
+
         var TableDrawer = DataSource.extend({
 
-            init: function(name, data, opts) {
-                this._super(name, data);
-                this.opts = opts;
-                this._currentRow = 0;
+            init: function(name) {
+                this._super(name);
                 this.subscribeToUpdate();
             },
 
             setOpts: function(opts) {
                 this.opts = opts;
+                return this;
+            },
+
+            setPageController: function (pc) {
+                this.pc = pc;
+                return this;
             },
 
             subscribeToUpdate: function() {
                 this._super(function() {
-                    this.draw()
+                    this.draw();
                 }, this);
             },
 
-            createTable: function() {
-                this.$container = this.opts.$container;
-                this.$table = $("<table>");
+            subscribeToSwitchView: function(fx, scope) {
+                this.subscribe("switchView", fx, scope);
+            },
 
+            fireSwitchView: function(id) {
+                //this.pc.fire("switchView");
+                $(this.pc).trigger("switchView", [id]);
+            },
+
+            clearContainer: function() {
+                this.hide();
+                return this;
+            },
+
+            hide: function() {
+                this.opts.$container.empty();
+            },
+
+            show: function (id) {
+                this.loadAllRows(id);
+                this.opts.$container.append(this.$table);
+            },
+
+            createTable: function() {
+                this.$table = $("<table>");
                 this.$table.addClass(this.opts.classes);
-                this.$container.append(this.$table);
+
+                return this;
             },
 
             addHeader: function() {
                 var $tr = $("<tr>");
-
                 var self = this;
-
                 $.each(this.opts.headers, function(i) {
                     var $th = $("<th>");
                     $tr.append( $th.html(self.opts.headers[i]) );
                 });
-
                 this.$table.append($tr);
-                this._currentRow++;
-
+                return this;
             },
 
             addRow: function(element) {
                 var $tr = $("<tr>");
 
-                for (var key in element) {
-                    if (key == "emps") continue;
-                    var $td = $("<td>");
-                    $tr.append( $td.html(element[key]) );
-                }
+                /*
+                 for (var key in element) {
+                 if (key == "emps") continue;
+                 $tr.append( $("<td>").html(element[key]) );
+                 }
+                 */
+                $.each(element, function(k, v) {
+                    if (k != "emps") {
+                        $tr.append( $("<td>").html(v) );
+                    }
+                });
 
-                this.addButtons($tr);
-
+                this.addInnerButtons($tr, element.id);
                 this.$table.append($tr);
-                this._currentRow++;
             },
 
-            addButtons: function($tr) {
-                var btns = this.opts.buttons;
+            addInnerButtons: function($tr, id) {
+                var btns = this.opts.innerButtons;
                 if (!btns) return;
                 for (var i = 0; i < btns.length; i++) {
-                    var button = btns[i];
-                    var $btn = $("<a>").addClass(button.classes)
-                            .html(button.value)
-                            .attr("href", button.href + "/" + this._currentRow)
-                            .click(button.onclick);
-                    var $td = $("<td>");
-                    $td.append($btn);
-                    $tr.append($td);
+                    var self = this;
+
+                    $("<td>").append( $("<a>").addClass(btns[i].classes)
+                            .html(btns[i].value)
+                            .click(btns[i].clicked(self, id)) )
+                            .appendTo($tr);
                 }
+            },
+
+            addOuterButtons: function() {
+
             },
 
             draw: function() {
-                this.createTable();
-
-                this.addHeader();
+                this.clearContainer().createTable().addHeader();
 
                 $.each( this.dataArray, $.proxy(function (i, e) {
                     this.addRow(e);
                 }, this) );
 
-                this.$container.append(this.$table);
+                this.opts.$container.append(this.$table);
+                this.addOuterButtons();
+            },
+
+            loadAllRows: function(id) {
+                var self = this;
+                $.getJSON(this.opts.loadAllRowsURL + (!!id ? "/" + id : ""),
+                        function(data) {
+                    self.setData(data);
+                }).done( function() {
+                    self.fireUpdate()
+                });
+            },
+
+            deleteRow: function(id) {
+                var self = this;
+                $.getJSON(this.opts.deleteRowURL + id).done( function() {
+                    self.loadAllRows();
+                });
             }
 
         });
 
+        //--------------------------------------------------------
+
+
+        var PageController = Class.extend({
+
+            init: function (name) {
+                this.name = name;
+
+                this.deptsTDrawer = new TableDrawer("deptsTDrawer");
+                this.deptsTDrawer.setOpts(getDeptsTableOpts()).setPageController(this);
+
+                this.empsTDrawer = new TableDrawer("empsTDrawer");
+                this.empsTDrawer.setOpts(getEmpsTableOpts()).setPageController(this);
+                this.subscribeToSwitchView();
+            },
+
+            subscribeToSwitchView: function () {
+                $(this).on("switchView", $.proxy(function(event, id) {
+                    alert("PC switch view subscribed! " + this.name);
+                    this.empsTDrawer.show(id);
+                }, this));
+            }
+
+        });
+
+
+        //---------------------------------------------------------
+
+
+
         $(document).ready(function() {
 
-            var tDrawer = new TableDrawer("TDrawer");
+            var pc = new PageController("New PageController");
 
-            tDrawer.setOpts({
-                $container: $(".depts-table"),
-                classes: "table table-bordered table-hover depts-table",
-                headers: ['Dept ID', 'Dept name', 'Edit', 'Delete', 'View'],
-                buttons: [
-                    {
-                        value: "Edit",
-                        classes: "btn btn-sm btn-primary",
-                        href: "/rest/dept/edit"
-                    },
+            //alert("showing");
 
-                    {
-                        value: "Delete",
-                        classes: "btn btn-sm btn-danger",
-                        href: "../rest/dept/delete",
-                        onclick: function() {
-                            $.getJSON("../rest/dept/delete/1", function(data) {
-                               return false;
-                            });
+            pc.deptsTDrawer.show();
 
-                        }
-                    },
 
-                    {
-                        value: "View",
-                        classes: "btn btn-sm btn-primary",
-                        href: "kyky_eshe"
-                    }]
-            });
+            //alert("hiding");
+            //pc.deptsTDrawer.hide();
+
+           // pc.empsTDrawer.show();
+
             /*
-             tDrawer.subscribeToUpdate(function() {
-             tDrawer.draw();
-             }, tDrawer);
+             var deptsTDrawer = new TableDrawer("deptsTDrawer");
+
+             deptsTDrawer.setOpts(getDeptsTableOpts());
+
+             deptsTDrawer.show();
+
+             //---------------------------------------------------------
+
+             var empsTDrawer = new TableDrawer("empsTDrawer");
+
+             empsTDrawer.setOpts(getEmpsTableOpts());*/
+
+            /*
+             empsTDrawer.subscribeToSwitchView(function() {
+             alert("event handled");
+             deptsTDrawer.hide();
+             empsTDrawer.show();
+             }, empsTDrawer);*/
+
+            /*
+             empsTDrawer.subscribeToSwitchView(function() {
+
+             alert(this);
+
+             }, empsTDrawer);
              */
 
-            $.getJSON("../rest/depts", function(data) {
-                tDrawer.setData(data);
-            });
+
+            /*
+             $(empsTDrawer).on("my", function () {
+             alert(this.name);
+             deptsTDrawer.hide();
+             });
+
+             $(empsTDrawer).trigger("my");
+
+             */
+            //empsTDrawer.show();
 
         });
 
     </script>
-
-    <table class="table table-bordered table-hover">
-
-
-
-
-        <%--
-        <tr>
-            <th>Dept ID</th>
-            <th>Dept name</th>
-            <th>Edit</th>
-            <th>Delete</th>
-            <th>View</th>
-        </tr>
-
-        <c:forEach items="${deptsList}" var="dept">
-
-            <form class="depts-form" method="post">
-
-                <tr>
-
-                    <td>${dept.id}</td>
-                    <td><c:out value="${dept.name}" /></td>
-                    <td>
-                        <button formaction="<c:url value="/deptedit_form.html" />"
-                        class="btn btn-sm btn-primary">Edit</button>
-                    </td>
-
-                    <!-- hidden input with param 'deptId'-->
-                    <input type="hidden" name="deptId" value="${dept.id}" />
-
-                    <td>
-                        <button formaction="<c:url value="/deptdel.html" />"
-                        class="btn btn-sm btn-danger">Delete</button>
-                    </td>
-
-                    <td>
-                        <button formaction="<c:url value="/emplist.html" />"
-                        class="btn btn-sm btn-primary">View</button>
-                    </td>
-
-                </tr>
-            </form>
-
-        </c:forEach>
-
---%>
-
-    </table>
 
     <form class="emps-addbtn-form" method="post">
         <button formaction="" class="btn btn-primary dept-add-btn">Add new dept</button>
