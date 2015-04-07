@@ -10,3 +10,4 @@
 <script src="<c:url value = "/resources/js/custom.js" />"></script>
 <script src="<c:url value = "/resources/js/class-extend.js" />"></script>
 <script src="<c:url value = "/resources/js/opts.js" />"></script>
+<script src="<c:url value = "/resources/js/date-format.js" />"></script>

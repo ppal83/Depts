@@ -45,17 +45,17 @@ table td {
 }
 
 .depts-table,
-.empls-table {
+.emps-table {
     margin-top: 15px;
 }
 
 .depts-table th,
-.empls-table th {
+.emps-table th {
     text-align: center;
 }
 
 .depts-table td,
-.empls-table td {
+.emps-table td {
     text-align: center;
     vertical-align: middle;
 }

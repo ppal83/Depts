@@ -30,9 +30,9 @@
         voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat
         cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
 
-    <h2>List of departments</h2>
 
-    <div class ="tables-container"></div>
+
+    <div class ="depts-container"></div>
 
     <div class ="emps-container"></div>
 
@@ -55,14 +55,6 @@
             }
 
         });
-
-        var AjaxQueriesSupportObject = Class.extend({
-
-            getAllDepts:1
-
-
-        });
-
 
 
         var DataSource = SupportObject.extend({
@@ -112,12 +104,13 @@
                 }, this);
             },
 
-            subscribeToSwitchView: function(fx, scope) {
-                this.subscribe("switchView", fx, scope);
-            },
+            /*
+             subscribeToSwitchView: function(fx, scope) {
+             this.subscribe("switchView", fx, scope);
+             },
+             */
 
             fireSwitchView: function(id) {
-                //this.pc.fire("switchView");
                 $(this.pc).trigger("switchView", [id]);
             },
 
@@ -142,6 +135,11 @@
                 return this;
             },
 
+            addTitle: function() {
+                this.opts.$container.append($("<h2>").html(this.opts.title));
+                return this;
+            },
+
             addHeader: function() {
                 var $tr = $("<tr>");
                 var self = this;
@@ -155,16 +153,12 @@
 
             addRow: function(element) {
                 var $tr = $("<tr>");
-
-                /*
-                 for (var key in element) {
-                 if (key == "emps") continue;
-                 $tr.append( $("<td>").html(element[key]) );
-                 }
-                 */
                 $.each(element, function(k, v) {
-                    if (k != "emps") {
-                        $tr.append( $("<td>").html(v) );
+                    switch (k) {
+                        case "emps": break;
+                        case "birthDate":
+                        case "hireDate": v = new Date(v).format("yyyy-mm-dd");
+                        default: $tr.append( $("<td>").html(v) ); break;
                     }
                 });
 
@@ -190,7 +184,7 @@
             },
 
             draw: function() {
-                this.clearContainer().createTable().addHeader();
+                this.clearContainer().createTable().addTitle().addHeader();
 
                 $.each( this.dataArray, $.proxy(function (i, e) {
                     this.addRow(e);
@@ -204,10 +198,10 @@
                 var self = this;
                 $.getJSON(this.opts.loadAllRowsURL + (!!id ? "/" + id : ""),
                         function(data) {
-                    self.setData(data);
-                }).done( function() {
-                    self.fireUpdate()
-                });
+                            self.setData(data);
+                        }).done( function() {
+                            self.fireUpdate()
+                        });
             },
 
             deleteRow: function(id) {
@@ -237,8 +231,8 @@
 
             subscribeToSwitchView: function () {
                 $(this).on("switchView", $.proxy(function(event, id) {
-                    alert("PC switch view subscribed! " + this.name);
                     this.empsTDrawer.show(id);
+                    this.deptsTDrawer.hide();
                 }, this));
             }
 
@@ -261,7 +255,7 @@
             //alert("hiding");
             //pc.deptsTDrawer.hide();
 
-           // pc.empsTDrawer.show();
+            // pc.empsTDrawer.show();
 
             /*
              var deptsTDrawer = new TableDrawer("deptsTDrawer");

@@ -2,7 +2,8 @@ function getDeptsTableOpts() {
 
     return {
 
-        $container: $(".tables-container"),
+        $container: $(".depts-container"),
+        title: "List of departments",
         loadAllRowsURL: "../rest/depts",
         deleteRowURL: "../rest/dept/delete/",
         classes: "table table-bordered table-hover depts-table",
@@ -52,6 +53,7 @@ function getEmpsTableOpts() {
     return {
 
         $container: $(".emps-container"),
+        title: "List of employees",
         loadAllRowsURL: "../rest/emps",
         deleteRowURL: "../rest/emp/delete/",
         classes: "table table-bordered table-hover emps-table",
