@@ -89,17 +89,7 @@
                 this._super(name);
                 this.subscribeToUpdate();
             },
-            /*
-             setOpts: function(opts) {
-             this.opts = opts;
-             return this;
-             },
 
-             setPageController: function (pc) {
-             this.pc = pc;
-             return this;
-             },
-             */
             subscribeToUpdate: function() {
                 this._super(function() {
                     this.draw();
@@ -245,13 +235,14 @@
             },
 
             hide: function() {
-                this.opts.$container.empty();
+                this.opts.$containerDiv.empty();
             },
 
             show: function (id) {
                 this.$id = id;
                 this.loadAllFields(id);
-                this.opts.$container.append(this.$table);
+                this.opts.$containerForm.append(this.$table);
+                this.opts.$containerDiv.append(this.opts.$containerForm);
             },
 
             clearContainer: function() {
@@ -260,12 +251,12 @@
             },
 
             addTitle: function() {
-                this.opts.$container.append($("<h2>").html(this.opts.title));
+                this.opts.$containerDiv.append($("<h2>").html(this.opts.title));
                 return this;
             },
 
             createTable: function() {
-                this.$table = $("<table>").addClass("dept-edit-table");
+                this.$table = $("<table>").addClass(this.opts.classes);
 
                 return this;
             },
@@ -303,7 +294,7 @@
                     var $tr = $("<tr>");
 
                     $("<td>").attr("colspan", 2)
-                            .append( $("<a>")
+                            .append( $("<button>")
                                     .addClass(this.classes)
                                     .html(this.value)
                                     .click( this.clicked(self) ) )
@@ -320,7 +311,8 @@
                         .addFields()
                         .addOuterButtons();
 
-                this.opts.$container.append(this.$table);
+                this.opts.$containerForm.append(this.$table);
+                this.opts.$containerDiv.append(this.opts.$containerForm);
             },
 
             loadAllFields: function(id) {
@@ -332,36 +324,34 @@
                             self.fireUpdate()
                         });
             },
-            /*
-             updateRow: function() {
-             var self = this;
-             $.getJSON(this.opts.updateRowURL + this.$id, {
-             id: $("#id").attr("value"),
-             name: $("#name").attr("value")
-             }).done( function() {
-             self.fireDeptsList();
-             })
-             }
-             */
+
             updateRow: function() {
                 var self = this;
 
+                $(".dept-form").validate({
+
+
+
+
+
+                })
+
+/*
                 $.ajax({
                     dataType: "json",
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json'
-                    },
-                    url: this.opts.updateRowURL + this.$id,
                     method: "POST",
-                    data: JSON.stringify({
-                        id: $("#id").val(),
+                    headers: {'Accept': 'application/json',
+                        'Content-Type': 'application/json'},
+                    url: this.opts.updateRowURL + this.$id,
+                    data: JSON.stringify({id: $("#id").val(),
                         name: $("#name").val()
                     }),
                     success: function() {
                         self.fireDeptsList();
                     }
                 });
+                */
+
 
             }
 

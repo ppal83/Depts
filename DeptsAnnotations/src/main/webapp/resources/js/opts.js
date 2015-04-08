@@ -120,7 +120,9 @@ function getEmpsTableOpts() {
 function getDeptFormOpts() {
 
     return {
-        $container: $(".depts-form-container"),
+        $containerDiv: $(".depts-form-container"),
+        $containerForm: $("<form>").addClass(".dept-edit-form"),
+        classes: "dept-edit-table",
         title: "Edit dept",
         loadAllFieldsURL: "../rest/dept/",
         updateRowURL: "../rest/dept/edit/",
