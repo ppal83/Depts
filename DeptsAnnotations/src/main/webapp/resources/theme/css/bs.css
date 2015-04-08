@@ -45,19 +45,37 @@ table td {
 }
 
 .depts-table,
-.emps-table {
+.empls-table {
     margin-top: 15px;
 }
 
 .depts-table th,
-.emps-table th {
+.empls-table th {
     text-align: center;
+    border: 1px solid #269abc !important;
 }
 
 .depts-table td,
-.emps-table td {
+.empls-table td {
     text-align: center;
     vertical-align: middle;
+    border: 1px solid #269abc !important;
+}
+
+.emp-add-btn,
+.dept-add-btn {
+    margin-top: 0.5em;
+    width: 20em;
+}
+
+.dept-edit-table {
+    text-align: center;
+}
+
+.btn-back {
+    display: block;
+    width: 10em;
+    margin-top: 0.5em;
 }
 
 .error {

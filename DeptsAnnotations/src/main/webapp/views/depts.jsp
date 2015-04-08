@@ -30,13 +30,10 @@
         voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat
         cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
 
-
-
-    <div class ="depts-container"></div>
-
-    <div class ="emps-container"></div>
-
-    <div class ="forms-container"></div>
+    <div class="depts-table-container"></div>
+    <div class="emps-table-container"></div>
+    <div class="depts-form-container"></div>
+    <div class="emps-form-container"></div>
 
     <script>
 
@@ -44,6 +41,16 @@
 
             init: function (name) {
                 this.name = name;
+            },
+
+            setOpts: function(opts) {
+                this.opts = opts;
+                return this;
+            },
+
+            setPageController: function (pc) {
+                this.pc = pc;
+                return this;
             },
 
             subscribe: function(event, fx, scope) {
@@ -63,23 +70,18 @@
                 this.fire("updated");
             },
 
-
             subscribeToUpdate: function(fx, scope) {
                 this.subscribe("updated", fx, scope);
             },
 
             setData: function (data) {
                 this.dataArray = data;
-            },
-
-            clear: function () {
-                this.dataArray = [];
             }
 
         });
 
 
-        //----------------------------------------------
+        //-----------------Table drawer-----------------------------
 
         var TableDrawer = DataSource.extend({
 
@@ -87,36 +89,33 @@
                 this._super(name);
                 this.subscribeToUpdate();
             },
+            /*
+             setOpts: function(opts) {
+             this.opts = opts;
+             return this;
+             },
 
-            setOpts: function(opts) {
-                this.opts = opts;
-                return this;
-            },
-
-            setPageController: function (pc) {
-                this.pc = pc;
-                return this;
-            },
-
+             setPageController: function (pc) {
+             this.pc = pc;
+             return this;
+             },
+             */
             subscribeToUpdate: function() {
                 this._super(function() {
                     this.draw();
                 }, this);
             },
 
-            /*
-             subscribeToSwitchView: function(fx, scope) {
-             this.subscribe("switchView", fx, scope);
-             },
-             */
-
-            fireSwitchView: function(id) {
-                $(this.pc).trigger("switchView", [id]);
+            fireEmpsList: function(id) {
+                $(this.pc).trigger("drawEmpsList", [id]);
             },
 
-            clearContainer: function() {
-                this.hide();
-                return this;
+            fireDeptsList: function() {
+                $(this.pc).trigger("drawDeptsList");
+            },
+
+            fireDeptEdit: function(id) {
+                $(this.pc).trigger("drawDeptForm", [id]);
             },
 
             hide: function() {
@@ -128,15 +127,20 @@
                 this.opts.$container.append(this.$table);
             },
 
-            createTable: function() {
-                this.$table = $("<table>");
-                this.$table.addClass(this.opts.classes);
-
+            clearContainer: function() {
+                this.hide();
                 return this;
             },
 
             addTitle: function() {
                 this.opts.$container.append($("<h2>").html(this.opts.title));
+                return this;
+            },
+
+            createTable: function() {
+                this.$table = $("<table>");
+                this.$table.addClass(this.opts.classes);
+
                 return this;
             },
 
@@ -180,11 +184,18 @@
             },
 
             addOuterButtons: function() {
-
+                var self = this;
+                $.each(this.opts.outerButtons, function() {
+                    $("<a>").addClass(this.classes).html(this.value)
+                            .click( this.clicked(self) ).appendTo(self.opts.$container);
+                })
             },
 
             draw: function() {
-                this.clearContainer().createTable().addTitle().addHeader();
+                this.clearContainer()
+                        .addTitle()
+                        .createTable()
+                        .addHeader();
 
                 $.each( this.dataArray, $.proxy(function (i, e) {
                     this.addRow(e);
@@ -206,107 +217,215 @@
 
             deleteRow: function(id) {
                 var self = this;
-                $.getJSON(this.opts.deleteRowURL + id).done( function() {
-                    self.loadAllRows();
-                });
+                $.getJSON(this.opts.deleteRowURL + id)
+                        .done( function(data) {
+                            self.loadAllRows(data.dept);
+                        });
             }
 
         });
 
-        //--------------------------------------------------------
+        //-----------------------Forms generator-----------------------------------
 
+        var FormsGenerator = DataSource.extend({
+
+            init: function(name) {
+                this._super(name);
+                this.subscribeToUpdate();
+            },
+
+            subscribeToUpdate: function() {
+                this._super(function() {
+                    this.draw();
+                }, this);
+            },
+
+            fireDeptsList: function() {
+                $(this.pc).trigger("drawDeptsList");
+            },
+
+            hide: function() {
+                this.opts.$container.empty();
+            },
+
+            show: function (id) {
+                this.$id = id;
+                this.loadAllFields(id);
+                this.opts.$container.append(this.$table);
+            },
+
+            clearContainer: function() {
+                this.hide();
+                return this;
+            },
+
+            addTitle: function() {
+                this.opts.$container.append($("<h2>").html(this.opts.title));
+                return this;
+            },
+
+            createTable: function() {
+                this.$table = $("<table>").addClass("dept-edit-table");
+
+                return this;
+            },
+
+            addFields: function() {
+                var self = this,
+                        i = 0;
+
+                $.each(this.dataArray, function(k, v) {
+                    if (k != "emps") {
+                        var $tr = $("<tr>");
+
+                        $("<td>").append($("<label>")
+                                .addClass("form-control")
+                                .attr("for", k).html(self.opts.labels[i++]))
+                                .appendTo($tr);
+
+                        $("<td>").append($("<input>")
+                                .addClass("form-control")
+                                .attr({"value": v, "id": k, "name": k})
+                                .prop("readonly", k == "id"))
+                                .appendTo($tr);
+
+                        $tr.appendTo(self.$table);
+                    }
+                });
+
+                return this;
+            },
+
+            addOuterButtons: function() {
+                var self = this;
+
+                $.each(this.opts.outerButtons, function() {
+                    var $tr = $("<tr>");
+
+                    $("<td>").attr("colspan", 2)
+                            .append( $("<a>")
+                                    .addClass(this.classes)
+                                    .html(this.value)
+                                    .click( this.clicked(self) ) )
+                            .appendTo($tr);
+
+                    $tr.appendTo(self.$table);
+                })
+            },
+
+            draw: function() {
+                this.clearContainer()
+                        .addTitle()
+                        .createTable()
+                        .addFields()
+                        .addOuterButtons();
+
+                this.opts.$container.append(this.$table);
+            },
+
+            loadAllFields: function(id) {
+                var self = this;
+                $.getJSON(this.opts.loadAllFieldsURL + id,
+                        function(data) {
+                            self.setData(data);
+                        }).done( function() {
+                            self.fireUpdate()
+                        });
+            },
+            /*
+             updateRow: function() {
+             var self = this;
+             $.getJSON(this.opts.updateRowURL + this.$id, {
+             id: $("#id").attr("value"),
+             name: $("#name").attr("value")
+             }).done( function() {
+             self.fireDeptsList();
+             })
+             }
+             */
+            updateRow: function() {
+                var self = this;
+
+                $.ajax({
+                    dataType: "json",
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    url: this.opts.updateRowURL + this.$id,
+                    method: "POST",
+                    data: JSON.stringify({
+                        id: $("#id").attr("value"),
+                        name: $("#name").attr("value")
+                    }),
+                    success: function() {
+                        self.fireDeptsList();
+                    }
+                });
+
+            }
+
+        });
+
+        //-----------------------Page controller---------------------------------
 
         var PageController = Class.extend({
 
             init: function (name) {
                 this.name = name;
 
+                //creating depts table drawer
                 this.deptsTDrawer = new TableDrawer("deptsTDrawer");
                 this.deptsTDrawer.setOpts(getDeptsTableOpts()).setPageController(this);
-
+                //creating emps table drawer
                 this.empsTDrawer = new TableDrawer("empsTDrawer");
                 this.empsTDrawer.setOpts(getEmpsTableOpts()).setPageController(this);
-                this.subscribeToSwitchView();
+
+                //creating dept form generator
+                this.deptFormGenerator = new FormsGenerator("deptsFGenerator");
+                this.deptFormGenerator.setOpts(getDeptFormOpts()).setPageController(this);
+
+                this.subscribeToDrawEmpsList();
+                this.subscribeToDrawDeptsList();
+                this.subscribeToDeptEdit();
             },
 
-            subscribeToSwitchView: function () {
-                $(this).on("switchView", $.proxy(function(event, id) {
+            subscribeToDrawEmpsList: function () {
+                $(this).on("drawEmpsList", $.proxy(function(event, id) {
                     this.empsTDrawer.show(id);
                     this.deptsTDrawer.hide();
                 }, this));
-            }
+            },
 
+            subscribeToDrawDeptsList: function () {
+                $(this).on("drawDeptsList", $.proxy(function() {
+                    this.empsTDrawer.hide();
+                    this.deptFormGenerator.hide();
+                    this.deptsTDrawer.show();
+                }, this));
+            },
+
+            subscribeToDeptEdit: function() {
+                $(this).on("drawDeptForm", $.proxy(function(event, id) {
+                    this.deptsTDrawer.hide();
+                    this.deptFormGenerator.show(id);
+                }, this));
+            }
         });
 
 
-        //---------------------------------------------------------
-
-
+        //----------------------------------------------------------------
+        //-------------------------MAIN-----------------------------------
+        //----------------------------------------------------------------
 
         $(document).ready(function() {
 
             var pc = new PageController("New PageController");
-
-            //alert("showing");
-
-            pc.deptsTDrawer.show();
-
-
-            //alert("hiding");
-            //pc.deptsTDrawer.hide();
-
-            // pc.empsTDrawer.show();
-
-            /*
-             var deptsTDrawer = new TableDrawer("deptsTDrawer");
-
-             deptsTDrawer.setOpts(getDeptsTableOpts());
-
-             deptsTDrawer.show();
-
-             //---------------------------------------------------------
-
-             var empsTDrawer = new TableDrawer("empsTDrawer");
-
-             empsTDrawer.setOpts(getEmpsTableOpts());*/
-
-            /*
-             empsTDrawer.subscribeToSwitchView(function() {
-             alert("event handled");
-             deptsTDrawer.hide();
-             empsTDrawer.show();
-             }, empsTDrawer);*/
-
-            /*
-             empsTDrawer.subscribeToSwitchView(function() {
-
-             alert(this);
-
-             }, empsTDrawer);
-             */
-
-
-            /*
-             $(empsTDrawer).on("my", function () {
-             alert(this.name);
-             deptsTDrawer.hide();
-             });
-
-             $(empsTDrawer).trigger("my");
-
-             */
-            //empsTDrawer.show();
+            pc.deptsTDrawer.show(); //initial view
 
         });
 
     </script>
-
-    <form class="emps-addbtn-form" method="post">
-        <button formaction="" class="btn btn-primary dept-add-btn">Add new dept</button>
-    </form>
-
-    <button onclick="window.history.back()"
-            class="btn btn-primary btn-back">Go back</button>
 
     <%@ include file="/resources/jspfs/footer.jspf"%>
 

@@ -50,46 +50,6 @@
 
     <a href="views/depts.jsp" class="btn btn-primary">View departments list</a>
 
-<!--
-    <script>
-
-        var options = {
-            ths: ["1st", "2nd", "3rd", "4th"],
-            tds: [["td1", "td2", "td3", "td4"],
-                ["td5", "td6", "td7", "td8"]],
-            rows: 2,
-            columns: 4
-        };
-
-        var $div = $(".ajax-table");
-        var $table = $("<table>").addClass("table table-hover");
-
-
-        var $tr = $("<tr>");
-
-        for (var i = 0; i < options.columns; i++) {
-            var $td = $("<td>");
-            $td.text(options.ths[i]);
-            $tr.append($td);
-        }
-
-        $table.append($tr);
-
-        for (i = 0; i < options.rows; i++) {
-            $tr = $("<tr>");
-            for (var j = 0; j < options.columns; j++) {
-                $td = $("<td>");
-                $td.text(options.tds[i][j]);
-                $tr.append($td);
-            }
-            $table.append($tr);
-        }
-
-        $div.append($table);
-
-    </script>
--->
-
     <h2>Lorem ipsum</h2>
 
     <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
