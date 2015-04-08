@@ -1,4 +1,5 @@
 package com.pp.spring;
+
 import com.pp.spring.model.Dept;
 import com.pp.spring.model.Employee;
 import com.pp.spring.service.DeptService;
@@ -9,32 +10,19 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Set;
 
 @RestController
-public class NewRestController {
+public class RESTController {
 
-    private static final Logger logger = Logger.getLogger(NewRestController.class);
+    private static final Logger logger = Logger.getLogger(RESTController.class);
 
     @Autowired
     private DeptService deptService;
 
     @Autowired
     private EmployeeService emplService;
-
-    @RequestMapping("/rest/emp/dummy")
-    public Employee getDummyEmployee() {
-        logger.debug("Returning dummy employee JSON object");
-
-        Employee emp = new Employee("Rulon Oboev",
-                new GregorianCalendar(1950, Calendar.JANUARY, 1).getTime(),
-                new GregorianCalendar().getTime(), "Pushkinskaya 40", new Dept("Dummy Dept"), 7777);
-
-        return emp;
-    }
 
     @RequestMapping("/rest/depts")
     public List<Dept> getDeptsList() {

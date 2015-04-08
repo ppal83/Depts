@@ -355,8 +355,8 @@
                     url: this.opts.updateRowURL + this.$id,
                     method: "POST",
                     data: JSON.stringify({
-                        id: $("#id").attr("value"),
-                        name: $("#name").attr("value")
+                        id: $("#id").val(),
+                        name: $("#name").val()
                     }),
                     success: function() {
                         self.fireDeptsList();
