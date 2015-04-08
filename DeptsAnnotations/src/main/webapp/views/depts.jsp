@@ -241,6 +241,7 @@
             show: function (id) {
                 this.$id = id;
                 this.loadAllFields(id);
+                //this.opts.$containerForm.attr("action", this.opts.updateRowURL + this.$id);
                 this.opts.$containerForm.append(this.$table);
                 this.opts.$containerDiv.append(this.opts.$containerForm);
             },
@@ -294,7 +295,7 @@
                     var $tr = $("<tr>");
 
                     $("<td>").attr("colspan", 2)
-                            .append( $("<button>")
+                            .append( $("<a>")
                                     .addClass(this.classes)
                                     .html(this.value)
                                     .click( this.clicked(self) ) )
@@ -324,33 +325,53 @@
                             self.fireUpdate()
                         });
             },
-
             updateRow: function() {
-                var self = this;
-
-                $(".dept-form").validate({
-
-
-
-
-
-                })
-
+                //var self = this;
 /*
-                $.ajax({
-                    dataType: "json",
-                    method: "POST",
-                    headers: {'Accept': 'application/json',
-                        'Content-Type': 'application/json'},
-                    url: this.opts.updateRowURL + this.$id,
-                    data: JSON.stringify({id: $("#id").val(),
-                        name: $("#name").val()
-                    }),
-                    success: function() {
-                        self.fireDeptsList();
+                $(".dept-form").validate({
+                    rules: {
+                        name: {
+                            required: true
+                        }
+                    },
+                    messages: {
+                        name: {
+                            required: "Name required"
+                        }
+                    },
+
+                    submitHandler: function() {
+                        $.ajax({
+                            dataType: "json",
+                            method: "POST",
+                            headers: {'Accept': 'application/json',
+                                'Content-Type': 'application/json'},
+                            url: this.opts.updateRowURL + this.$id,
+                            data: JSON.stringify({id: $("#id").val(),
+                                name: $("#name").val()
+                            }),
+                            success: function() {
+                                self.fireDeptsList();
+                            }
+                        });
                     }
+
                 });
-                */
+*/
+
+                 $.ajax({
+                 dataType: "json",
+                 method: "POST",
+                 headers: {'Accept': 'application/json',
+                 'Content-Type': 'application/json'},
+                 url: this.opts.updateRowURL + this.$id,
+                 data: JSON.stringify({id: $("#id").val(),
+                 name: $("#name").val()
+                 }),
+                 success: function() {
+                 self.fireDeptsList();
+                 }
+                 });
 
 
             }
