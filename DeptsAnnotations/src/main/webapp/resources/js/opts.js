@@ -37,8 +37,8 @@ function getDeptsTableOpts() {
         outerButtons: [
             {   value: "Add new dept",
                 classes: "btn btn-primary dept-add-btn",
-                clicked: function() { return function() {
-
+                clicked: function(self, id) { return function() {
+                    self.fireDeptAdd();
                 }}
             },
 
@@ -117,7 +117,7 @@ function getEmpsTableOpts() {
     }
 }
 
-function getDeptFormOpts() {
+function getDeptEditFormOpts() {
 
     return {
         $containerDiv: $(".depts-form-container"),
@@ -131,6 +131,36 @@ function getDeptFormOpts() {
         //--------------buttons outside form------------------------
         outerButtons: [
             {   value: "Edit dept",
+                classes: "btn btn-primary cust",
+                clicked: function() { }
+            },
+
+            {   value: "To previous page",
+                classes: "btn btn-primary btn-back",
+                clicked: function() {
+                    return function() {
+                        window.history.back();
+                    }
+                }
+            }
+        ]
+    }
+}
+
+function getDeptAddFormOpts() {
+
+    return {
+        $containerDiv: $(".depts-form-container"),
+        $containerForm: $("<form>").addClass(".dept-add-form"),
+        classes: "dept-add-table",
+        title: "Add dept",
+        updateRowURL: "../rest/dept/add",
+        template: {name: ""},
+        labels: ["Name"],
+
+        //--------------buttons outside form------------------------
+        outerButtons: [
+            {   value: "Add dept",
                 classes: "btn btn-primary cust",
                 clicked: function() { }
             },

@@ -38,6 +38,14 @@ public class RESTController {
         return deptService.getDeptById(id);
     }
 
+    @RequestMapping("/rest/dept/add")
+    public Dept addDept(@RequestBody Dept dept) {
+        logger.debug("Adding dept " + dept);
+        deptService.addDept(dept);
+
+        return dept;
+    }
+
     @RequestMapping("/rest/dept/delete/{id}")
     public Dept deleteDept(@PathVariable("id") int id) {
         logger.debug("Deleting dept id = " + id);
@@ -54,7 +62,7 @@ public class RESTController {
 
     @RequestMapping("/rest/dept/edit/{id}")
     public Dept editDept(@RequestBody Dept dept, @PathVariable("id") int id) {
-        logger.debug("Updating dept " + dept + "id = " + id);
+        logger.debug("Updating dept " + dept + " id = " + id);
         deptService.updateDept(dept);
 
         return dept;
@@ -78,5 +86,15 @@ public class RESTController {
         return emp;
     }
 
+    //-------------------------------Validation checks----------------------------
+
+    @RequestMapping("/rest/check/dept/name")
+    public boolean checkDeptName(@RequestBody Dept dept) {
+        logger.debug("Checking whether dept name exists: " + dept);
+
+        Dept dbDept = deptService.findByName(dept.getName());
+
+        return !( dbDept != null && dept.getId() != dbDept.getId() );
+    }
 
 }

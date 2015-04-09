@@ -104,8 +104,12 @@
                 $(this.pc).trigger("drawDeptsList");
             },
 
+            fireDeptAdd: function() {
+                $(this.pc).trigger("drawDeptAddForm");
+            },
+
             fireDeptEdit: function(id) {
-                $(this.pc).trigger("drawDeptForm", [id]);
+                $(this.pc).trigger("drawDeptEditForm", [id]);
             },
 
             hide: function() {
@@ -239,12 +243,9 @@
                 this.opts.$containerForm.empty();
             },
 
-            show: function (id) {
+            show: function(id) {
                 this.$id = id;
                 this.loadAllFields(id);
-                this.opts.$containerForm.attr({/*"action": this.opts.updateRowURL + this.$id,*/
-                    "method": "POST",
-                    "enctype": "application/json"});
                 this.opts.$containerForm.append(this.$table);
                 this.opts.$containerDiv.append(this.opts.$containerForm);
             },
@@ -324,25 +325,30 @@
 
             loadAllFields: function(id) {
                 var self = this;
-                $.getJSON(this.opts.loadAllFieldsURL + id,
-                        function(data) {
-                            self.setData(data);
-                        }).done( function() {
-                            self.fireUpdate()
-                        });
+                if (id) {
+                    $.getJSON(this.opts.loadAllFieldsURL + id,
+                            function (data) {
+                                self.setData(data);
+                            }).done(function () {
+                                self.fireUpdate();
+                            });
+                } else {
+                    this.dataArray = this.opts.template;
+                    this.draw();
+                }
             },
 
             updateRow: function() {
                 var self = this;
 
                 $.ajax({
-                    url: this.opts.updateRowURL + this.$id,
+                    url: this.opts.updateRowURL + (!!this.$id ? this.$id : ""),
                     method: "POST",
                     dataType: "json",
                     contentType: "application/json",
-                    data: JSON.stringify({id: $("#id").val(),
+                    data: JSON.stringify( {id: $("#id").val(),
                         name: $("#name").val()
-                    }),
+                    } ),
                     success: function() {
                         self.fireDeptsList();
                     }
@@ -364,12 +370,17 @@
                 this.empsTDrawer = new TableDrawer("empsTDrawer");
                 this.empsTDrawer.setOpts(getEmpsTableOpts()).setPageController(this);
 
-                //creating dept form generator
-                this.deptFormGenerator = new FormsGenerator("deptsFGenerator");
-                this.deptFormGenerator.setOpts(getDeptFormOpts()).setPageController(this);
+                //creating dept add form generator
+                this.deptAddFormGenerator = new FormsGenerator("deptAddFGenerator");
+                this.deptAddFormGenerator.setOpts(getDeptAddFormOpts()).setPageController(this);
+
+                //creating dept edit form generator
+                this.deptEditFormGenerator = new FormsGenerator("deptEditFGenerator");
+                this.deptEditFormGenerator.setOpts(getDeptEditFormOpts()).setPageController(this);
 
                 this.subscribeToDrawEmpsList();
                 this.subscribeToDrawDeptsList();
+                this.subscribeToDeptAdd();
                 this.subscribeToDeptEdit();
             },
 
@@ -383,17 +394,26 @@
             subscribeToDrawDeptsList: function () {
                 $(this).on("drawDeptsList", $.proxy(function() {
                     this.empsTDrawer.hide();
-                    this.deptFormGenerator.hide();
+                    this.deptEditFormGenerator.hide();
                     this.deptsTDrawer.show();
                 }, this));
             },
 
             subscribeToDeptEdit: function() {
-                $(this).on("drawDeptForm", $.proxy(function(event, id) {
+                $(this).on("drawDeptEditForm", $.proxy(function(event, id) {
                     this.deptsTDrawer.hide();
-                    this.deptFormGenerator.show(id);
+                    this.deptEditFormGenerator.show(id);
+                }, this));
+            },
+
+            subscribeToDeptAdd: function() {
+                $(this).on("drawDeptAddForm", $.proxy(function() {
+                    this.deptsTDrawer.hide();
+                    this.deptAddFormGenerator.show(0);
                 }, this));
             }
+
+
         });
 
 
