@@ -132,11 +132,7 @@ function getDeptFormOpts() {
         outerButtons: [
             {   value: "Edit dept",
                 classes: "btn btn-primary cust",
-                clicked: function(self, id) {
-                    return function() {
-                        self.updateRow(id);
-                    }
-                }
+                clicked: function() { }
             },
 
             {   value: "To previous page",

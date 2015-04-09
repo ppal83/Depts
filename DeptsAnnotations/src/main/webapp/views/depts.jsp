@@ -236,12 +236,15 @@
 
             hide: function() {
                 this.opts.$containerDiv.empty();
+                this.opts.$containerForm.empty();
             },
 
             show: function (id) {
                 this.$id = id;
                 this.loadAllFields(id);
-                //this.opts.$containerForm.attr("action", this.opts.updateRowURL + this.$id);
+                this.opts.$containerForm.attr({/*"action": this.opts.updateRowURL + this.$id,*/
+                    "method": "POST",
+                    "enctype": "application/json"});
                 this.opts.$containerForm.append(this.$table);
                 this.opts.$containerDiv.append(this.opts.$containerForm);
             },
@@ -295,7 +298,7 @@
                     var $tr = $("<tr>");
 
                     $("<td>").attr("colspan", 2)
-                            .append( $("<a>")
+                            .append( $("<button>")
                                     .addClass(this.classes)
                                     .html(this.value)
                                     .click( this.clicked(self) ) )
@@ -314,6 +317,9 @@
 
                 this.opts.$containerForm.append(this.$table);
                 this.opts.$containerDiv.append(this.opts.$containerForm);
+
+                validateDept(this);
+
             },
 
             loadAllFields: function(id) {
@@ -325,57 +331,23 @@
                             self.fireUpdate()
                         });
             },
+
             updateRow: function() {
-                //var self = this;
-/*
-                $(".dept-form").validate({
-                    rules: {
-                        name: {
-                            required: true
-                        }
-                    },
-                    messages: {
-                        name: {
-                            required: "Name required"
-                        }
-                    },
+                var self = this;
 
-                    submitHandler: function() {
-                        $.ajax({
-                            dataType: "json",
-                            method: "POST",
-                            headers: {'Accept': 'application/json',
-                                'Content-Type': 'application/json'},
-                            url: this.opts.updateRowURL + this.$id,
-                            data: JSON.stringify({id: $("#id").val(),
-                                name: $("#name").val()
-                            }),
-                            success: function() {
-                                self.fireDeptsList();
-                            }
-                        });
+                $.ajax({
+                    url: this.opts.updateRowURL + this.$id,
+                    method: "POST",
+                    dataType: "json",
+                    contentType: "application/json",
+                    data: JSON.stringify({id: $("#id").val(),
+                        name: $("#name").val()
+                    }),
+                    success: function() {
+                        self.fireDeptsList();
                     }
-
                 });
-*/
-
-                 $.ajax({
-                 dataType: "json",
-                 method: "POST",
-                 headers: {'Accept': 'application/json',
-                 'Content-Type': 'application/json'},
-                 url: this.opts.updateRowURL + this.$id,
-                 data: JSON.stringify({id: $("#id").val(),
-                 name: $("#name").val()
-                 }),
-                 success: function() {
-                 self.fireDeptsList();
-                 }
-                 });
-
-
             }
-
         });
 
         //-----------------------Page controller---------------------------------
@@ -433,6 +405,7 @@
 
             var pc = new PageController("New PageController");
             pc.deptsTDrawer.show(); //initial view
+
 
         });
 

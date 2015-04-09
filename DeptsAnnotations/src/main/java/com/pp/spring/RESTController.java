@@ -53,8 +53,8 @@ public class RESTController {
     }
 
     @RequestMapping("/rest/dept/edit/{id}")
-    public Dept editDept(@RequestBody Dept dept) {
-        logger.debug("Updating dept " + dept);
+    public Dept editDept(@RequestBody Dept dept, @PathVariable("id") int id) {
+        logger.debug("Updating dept " + dept + "id = " + id);
         deptService.updateDept(dept);
 
         return dept;
