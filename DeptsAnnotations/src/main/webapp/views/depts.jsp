@@ -112,6 +112,14 @@
                 $(this.pc).trigger("drawDeptEditForm", [id]);
             },
 
+            fireEmpAdd: function(id) {
+                $(this.pc).trigger("drawEmpAddForm", [id]);
+            },
+
+            fireEmpEdit: function(id) {
+                $(this.pc).trigger("drawEmpEditForm", [id]);
+            },
+
             hide: function() {
                 this.opts.$container.empty();
             },
@@ -152,12 +160,14 @@
             addRow: function(element) {
                 var $tr = $("<tr>");
                 $.each(element, function(k, v) {
-                    switch (k) {
-                        case "emps": break;
-                        case "birthDate":
-                        case "hireDate": v = new Date(v).format("yyyy-mm-dd");
-                        default: $tr.append( $("<td>").html(v) ); break;
+                    if ( k == "birthDate" || k == "hireDate") {
+                        v = new Date(v).format("yyyy-mm-dd");
                     }
+
+                    if ( k == "dept") {
+                        v = v.name;
+                    }
+                    $tr.append( $("<td>").html(v) );
                 });
 
                 this.addInnerButtons($tr, element.id);
@@ -201,7 +211,7 @@
 
             loadAllRows: function(id) {
                 var self = this;
-                $.getJSON(this.opts.loadAllRowsURL + (!!id ? "/" + id : ""),
+                $.getJSON(this.opts.loadAllRowsURL + ( !!id ? "/" + id : "" ),
                         function(data) {
                             self.setData(data);
                         }).done( function() {
@@ -213,7 +223,7 @@
                 var self = this;
                 $.getJSON(this.opts.deleteRowURL + id)
                         .done( function(data) {
-                            self.loadAllRows(data.dept);
+                            self.loadAllRows( data.dept ? data.dept.id : "" );
                         });
             }
 
@@ -232,6 +242,10 @@
                 this._super(function() {
                     this.draw();
                 }, this);
+            },
+
+            fireEmpsList: function(id) {
+                $(this.pc).trigger("drawEmpsList", [id]);
             },
 
             fireDeptsList: function() {
@@ -281,8 +295,11 @@
 
                         $("<td>").append($("<input>")
                                 .addClass("form-control")
-                                .attr({"value": v, "id": k, "name": k})
-                                .prop("readonly", k == "id"))
+                                .attr({"value": k == "dept" ? v.name : v,
+                                    "id": k, "name": k,
+                                    "placeholder": k == "birthDate" ||
+                                    k == "hireDate" ? "yyyy-MM-dd" : "" })
+                                .prop("readonly", k == "id" || ( k == "dept" && self.opts.action == "edit" )))
                                 .appendTo($tr);
 
                         $tr.appendTo(self.$table);
@@ -319,13 +336,12 @@
                 this.opts.$containerForm.append(this.$table);
                 this.opts.$containerDiv.append(this.opts.$containerForm);
 
-                validateDept(this);
-
+                this.opts.validate(this);
             },
 
             loadAllFields: function(id) {
                 var self = this;
-                if (id) {
+                if ( id ) {
                     $.getJSON(this.opts.loadAllFieldsURL + id,
                             function (data) {
                                 self.setData(data);
@@ -340,17 +356,29 @@
 
             updateRow: function() {
                 var self = this;
+                var jsonObject = {id: this.$id};
+
+                $.each(this.dataArray, function(k, v) {
+                    if (k == "dept") {
+                        jsonObject[k] = v;
+                    } else {
+                        jsonObject[k] = $("#" + k).val();
+                    }
+                });
 
                 $.ajax({
-                    url: this.opts.updateRowURL + (!!this.$id ? this.$id : ""),
+                    url: this.opts.updateRowURL +
+                    ( !!this.$id ? this.$id : "" ),
                     method: "POST",
                     dataType: "json",
                     contentType: "application/json",
-                    data: JSON.stringify( {id: $("#id").val(),
-                        name: $("#name").val()
-                    } ),
+                    data: JSON.stringify(jsonObject),
                     success: function() {
-                        self.fireDeptsList();
+                        if (self.opts.objType == "employee" ) {
+                            self.fireEmpsList(self.$id || 3);
+                        } else {
+                            self.fireDeptsList();
+                        }
                     }
                 });
             }
@@ -378,16 +406,27 @@
                 this.deptEditFormGenerator = new FormsGenerator("deptEditFGenerator");
                 this.deptEditFormGenerator.setOpts(getDeptEditFormOpts()).setPageController(this);
 
+                //creating employee edit form generator
+                this.empEditFormGenerator = new FormsGenerator("empEditFGenerator");
+                this.empEditFormGenerator.setOpts(getEmpEditFormOpts("drawEmpEditForm")).setPageController(this);
+
+                //creating employee add form generator
+                this.empAddFormGenerator = new FormsGenerator("empAddFGenerator");
+                this.empAddFormGenerator.setOpts(getEmpAddFormOpts("drawEmpAddForm")).setPageController(this);
+
                 this.subscribeToDrawEmpsList();
                 this.subscribeToDrawDeptsList();
                 this.subscribeToDeptAdd();
                 this.subscribeToDeptEdit();
+                this.subscribeToEmpEdit();
+                this.subscribeToEmpAdd();
             },
 
             subscribeToDrawEmpsList: function () {
                 $(this).on("drawEmpsList", $.proxy(function(event, id) {
-                    this.empsTDrawer.show(id);
+                    this.empEditFormGenerator.hide();
                     this.deptsTDrawer.hide();
+                    this.empsTDrawer.show(id);
                 }, this));
             },
 
@@ -395,6 +434,7 @@
                 $(this).on("drawDeptsList", $.proxy(function() {
                     this.empsTDrawer.hide();
                     this.deptEditFormGenerator.hide();
+                    this.empEditFormGenerator.hide();
                     this.deptsTDrawer.show();
                 }, this));
             },
@@ -410,6 +450,20 @@
                 $(this).on("drawDeptAddForm", $.proxy(function() {
                     this.deptsTDrawer.hide();
                     this.deptAddFormGenerator.show(0);
+                }, this));
+            },
+
+            subscribeToEmpEdit: function() {
+                $(this).on("drawEmpEditForm", $.proxy(function(event, id) {
+                    this.empsTDrawer.hide();
+                    this.empEditFormGenerator.show(id);
+                }, this));
+            },
+
+            subscribeToEmpAdd: function() {
+                $(this).on("drawEmpAddForm", $.proxy(function(event, id) {
+                    this.empsTDrawer.hide();
+                    this.empAddFormGenerator.show(id);
                 }, this));
             }
 

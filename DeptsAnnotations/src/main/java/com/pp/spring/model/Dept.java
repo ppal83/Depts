@@ -11,6 +11,9 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Fetch;
@@ -32,6 +35,7 @@ public class Dept {
 	@Fetch(FetchMode.SELECT)
 	@Cascade(CascadeType.DETACH)
 	@OrderBy("id")
+	@JsonIgnore
 	private Set<Employee> emps = new HashSet<>(0);
 
 	public Dept() {

@@ -37,12 +37,12 @@ function getDeptsTableOpts() {
         outerButtons: [
             {   value: "Add new dept",
                 classes: "btn btn-primary dept-add-btn",
-                clicked: function(self, id) { return function() {
+                clicked: function(self) { return function() {
                     self.fireDeptAdd();
                 }}
             },
 
-            {   value: "To previous page",
+            {   value: "To main page",
                 classes: "btn btn-primary btn-back",
                 clicked: function() { return function() {
                     window.history.back();
@@ -68,20 +68,16 @@ function getEmpsTableOpts() {
         innerButtons: [
             {   value: "Edit",
                 classes: "btn btn-sm btn-primary",
-                clicked: function() {
-                    return function() {
-                        self.deleteRow(id);
-                    }
-                }
+                clicked: function(self, id) { return function() {
+                    self.fireEmpEdit(id);
+                }}
             },
 
             {   value: "Delete",
                 classes: "btn btn-sm btn-danger",
-                clicked: function(self, id) {
-                    return function() {
-                        self.deleteRow(id);
-                    }
-                }
+                clicked: function(self, id) { return function() {
+                    self.deleteRow(id);
+                }}
             }],
 
 
@@ -89,29 +85,23 @@ function getEmpsTableOpts() {
         outerButtons: [
             {   value: "Add new employee",
                 classes: "btn btn-primary emp-add-btn",
-                clicked: function() {
-                    return function() {
-
-                    }
-                }
+                clicked: function(self, id) { return function() {
+                    self.fireEmpAdd(id);
+                }}
             },
 
             {   value: "Back to depts list",
                 classes: "btn btn-primary btn-back",
-                clicked: function(self) {
-                    return function() {
-                        self.fireDeptsList();
-                    }
-                }
+                clicked: function(self) { return function() {
+                    self.fireDeptsList();
+                }}
             },
 
-            {   value: "To previous page",
+            {   value: "To main page",
                 classes: "btn btn-primary btn-back",
-                clicked: function() {
-                    return function() {
-                        window.history.back();
-                    }
-                }
+                clicked: function() { return function() {
+                    window.history.back();
+                }}
             }
         ]
     }
@@ -120,6 +110,8 @@ function getEmpsTableOpts() {
 function getDeptEditFormOpts() {
 
     return {
+        objType: "dept",
+        action: "edit",
         $containerDiv: $(".depts-form-container"),
         $containerForm: $("<form>").addClass(".dept-edit-form"),
         classes: "dept-edit-table",
@@ -127,6 +119,7 @@ function getDeptEditFormOpts() {
         loadAllFieldsURL: "../rest/dept/",
         updateRowURL: "../rest/dept/edit/",
         labels: ["ID", "Name"],
+        validate: validateDept,
 
         //--------------buttons outside form------------------------
         outerButtons: [
@@ -135,13 +128,18 @@ function getDeptEditFormOpts() {
                 clicked: function() { }
             },
 
-            {   value: "To previous page",
+            {   value: "Back to depts list",
                 classes: "btn btn-primary btn-back",
-                clicked: function() {
-                    return function() {
-                        window.history.back();
-                    }
-                }
+                clicked: function(self) { return function() {
+                    self.fireDeptsList();
+                }}
+            },
+
+            {   value: "To main page",
+                classes: "btn btn-primary btn-back",
+                clicked: function() { return function() {
+                    window.history.back();
+                }}
             }
         ]
     }
@@ -150,6 +148,8 @@ function getDeptEditFormOpts() {
 function getDeptAddFormOpts() {
 
     return {
+        objType: "dept",
+        action: "add",
         $containerDiv: $(".depts-form-container"),
         $containerForm: $("<form>").addClass(".dept-add-form"),
         classes: "dept-add-table",
@@ -157,6 +157,7 @@ function getDeptAddFormOpts() {
         updateRowURL: "../rest/dept/add",
         template: {name: ""},
         labels: ["Name"],
+        validate: validateDept,
 
         //--------------buttons outside form------------------------
         outerButtons: [
@@ -165,13 +166,104 @@ function getDeptAddFormOpts() {
                 clicked: function() { }
             },
 
-            {   value: "To previous page",
+            {   value: "Back to depts list",
                 classes: "btn btn-primary btn-back",
-                clicked: function() {
-                    return function() {
-                        window.history.back();
-                    }
-                }
+                clicked: function(self) { return function() {
+                    self.fireDeptsList();
+                }}
+            },
+
+            {   value: "To main page",
+                classes: "btn btn-primary btn-back",
+                clicked: function() { return function() {
+                    window.history.back();
+                }}
+            }
+        ]
+    }
+}
+
+function getEmpEditFormOpts() {
+
+    return {
+        objType: "employee",
+        action: "edit",
+        $containerDiv: $(".emps-form-container"),
+        $containerForm: $("<form>").addClass(".emp-edit-form"),
+        classes: "emp-edit-table",
+        title: "Edit employee",
+        loadAllFieldsURL: "../rest/emp/",
+        updateRowURL: "../rest/emp/edit/",
+        labels: ["ID", "Name", "Birthday", "HireDate",
+            "Address", "Email", "Dept", "Salary"],
+        validate: validateEmp,
+
+        //--------------buttons outside form------------------------
+        outerButtons: [
+            {   value: "Edit employee",
+                classes: "btn btn-primary cust",
+                clicked: function() { }
+            },
+
+            {   value: "Back to depts list",
+                classes: "btn btn-primary btn-back",
+                clicked: function(self) { return function() {
+                    self.fireDeptsList();
+                }}
+            },
+
+            {   value: "To main page",
+                classes: "btn btn-primary btn-back",
+                clicked: function() { return function() {
+                    window.history.back();
+                }}
+            }
+        ]
+    }
+}
+
+function getEmpAddFormOpts() {
+
+    return {
+        objType: "employee",
+        action: "add",
+        $containerDiv: $(".emps-form-container"),
+        $containerForm: $("<form>").addClass(".emp-add-form"),
+        classes: "emp-add-table",
+        title: "Add employee",
+        updateRowURL: "../rest/emp/add",
+        template: {
+            name: "" ,
+            birthDate: "",
+            hireDate: "",
+            address: "",
+            email: "",
+            dept: {name: "Sales"},
+            salary: ""
+        },
+        labels: ["Name", "Birthday", "HireDate",
+            "Address", "Email", "Dept", "Salary"],
+        validate: validateEmp,
+
+        //--------------buttons outside form------------------------
+        outerButtons: [
+            {   value: "Add employee",
+                classes: "btn btn-primary cust",
+                clicked: function() { }
+            },
+
+            {   value: "Back to depts list",
+                classes: "btn btn-primary btn-back",
+                clicked: function(self) { return function() {
+                    self.fireDeptsList();
+                }}
+            },
+
+            {   value: "To main page",
+                classes: "btn btn-primary btn-back",
+                clicked: function() { return function() {
+                    window.history.back();
+                }}
             }
         ]
     }

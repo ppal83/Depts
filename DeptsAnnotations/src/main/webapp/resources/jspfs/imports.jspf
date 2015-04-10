@@ -13,3 +13,4 @@
 <script src="<c:url value = "/resources/js/date-format.js" />"></script>
 <script src="<c:url value = "/resources/js/jquery.validate.js" />"></script>
 <script src="<c:url value = "/resources/js/dept-validation.js" />"></script>
+<script src="<c:url value = "/resources/js/emp-validation.js" />"></script>

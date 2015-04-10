@@ -11,6 +11,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
@@ -48,8 +50,8 @@ public class Employee {
 
     @ManyToOne
     @JoinColumn(name = "dept_id")
-    @JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id")
-    @JsonIdentityReference(alwaysAsId=true)
+   //@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id")
+   // @JsonIdentityReference(alwaysAsId=true)
     private Dept dept;
 
     @Column(name = "salary")
