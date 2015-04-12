@@ -238,7 +238,7 @@ function getEmpAddFormOpts() {
             hireDate: "",
             address: "",
             email: "",
-            dept: {name: "Sales"},
+            dept: {name: ""},
             salary: ""
         },
         labels: ["Name", "Birthday", "HireDate",

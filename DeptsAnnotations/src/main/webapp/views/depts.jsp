@@ -299,8 +299,10 @@
                                     "id": k, "name": k,
                                     "placeholder": k == "birthDate" ||
                                     k == "hireDate" ? "yyyy-MM-dd" : "" })
-                                .prop("readonly", k == "id" || ( k == "dept" && self.opts.action == "edit" )))
+                                .prop("readonly", k == "id" /*|| ( k == "dept" && self.opts.action == "edit" ))*/ ))
                                 .appendTo($tr);
+                        $("<td>").append( $("<label>").addClass("errors") ).appendTo($tr);
+
 
                         $tr.appendTo(self.$table);
                     }
@@ -360,7 +362,8 @@
 
                 $.each(this.dataArray, function(k, v) {
                     if (k == "dept") {
-                        jsonObject[k] = v;
+                        //jsonObject[k] = v;
+                        jsonObject[k] = { name: $("#" + k).val() }
                     } else {
                         jsonObject[k] = $("#" + k).val();
                     }
@@ -374,11 +377,7 @@
                     contentType: "application/json",
                     data: JSON.stringify(jsonObject),
                     success: function() {
-                        if (self.opts.objType == "employee" ) {
-                            self.fireEmpsList(self.$id || 3);
-                        } else {
-                            self.fireDeptsList();
-                        }
+                        self.fireDeptsList();
                     }
                 });
             }

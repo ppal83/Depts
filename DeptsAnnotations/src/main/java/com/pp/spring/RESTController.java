@@ -82,12 +82,7 @@ public class RESTController {
 
     @RequestMapping("/rest/emp/add")
     public Employee addEmp(@RequestBody Employee emp) {
-        logger.debug("Request body emp " + emp);
-        logger.debug("emp.getDept().getname() " + emp.getDept().getName());
-        logger.debug("deptService.findByName() " + deptService.findByName("Sales") );
         Dept dept = deptService.findByName( emp.getDept().getName() );
-
-        logger.debug("dept by name " + dept);
         emp.setDept(dept);
 
         logger.debug("Adding employee " + emp);
@@ -110,6 +105,9 @@ public class RESTController {
 
     @RequestMapping("/rest/emp/edit/{id}")
     public Employee editEmp(@RequestBody Employee emp, @PathVariable("id") int id) {
+        Dept dept = deptService.findByName( emp.getDept().getName() );
+        emp.setDept(dept);
+
         logger.debug("Updating employee " + emp + " id = " + id);
         emplService.updateEmployee(emp);
 
@@ -128,10 +126,10 @@ public class RESTController {
     }
 
     @RequestMapping("/rest/check/dept/name-exists")
-    public boolean checkDeptNameExists(@RequestParam String dept) {
+    public boolean checkDeptNameExists(@RequestBody Dept dept) {
         logger.debug("Checking whether dept name exists: " + dept);
 
-        return deptService.findByName(dept) != null;
+        return deptService.findByName( dept.getName() ) != null;
     }
 
     @RequestMapping("/rest/check/emp/name")

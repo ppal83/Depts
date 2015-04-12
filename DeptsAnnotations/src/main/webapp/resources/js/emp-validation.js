@@ -1,7 +1,7 @@
 function validateEmp(self) {
 
     $("form").validate({
-        //errorLabelContainer: '.depts-table-container',
+        errorLabelContainer: '.error',
         submitHandler: function () {
             self.updateRow();
         }
@@ -91,14 +91,18 @@ function validateEmp(self) {
     });
 
     $("#dept").rules("add", {
+        required: true,
         remote: function() {
             return {
                 url: "../rest/check/dept/name-exists",
-                method: "get",
-                data: $("#dept").val()
+                method: "post",
+                contentType: "application/json",
+                dataType: "json",
+                data: JSON.stringify( { name: $("#dept").val() } )
             }
         },
         messages: {
+            required: "Dept name required",
             remote: "Dept not exists"
         }
     });
@@ -120,7 +124,7 @@ function validateEmp(self) {
             hireDate: $("#hireDate").val(),
             address: $("#address").val(),
             email: $("#email").val(),
-            dept: self.dataArray.dept,
+            dept: { name: $("#dept").val() },
             salary: $("#salary").val()
         })
     }
