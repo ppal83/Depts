@@ -81,28 +81,4 @@ public class AppConfig extends WebMvcConfigurerAdapter {
 
         return viewResolver;
     }
-
-
-    @Bean(name = "messageSource")
-    public ReloadableResourceBundleMessageSource getMessageSource() {
-        ReloadableResourceBundleMessageSource resource = new ReloadableResourceBundleMessageSource();
-        resource.setBasename("classpath:message");
-        resource.setDefaultEncoding("UTF-8");
-
-        return resource;
-    }
-
-    /*
-    @Bean(name = "jacksonMessageConverter")
-    public MappingJackson2HttpMessageConverter getJacksonMessageConverter() {
-        MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
-        //-------------
-        return converter;
-    }
-
-    @Override
-    public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
-        converters.add(getJacksonMessageConverter());
-    }
-    */
 }

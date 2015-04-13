@@ -15,8 +15,7 @@ public class SpringMVCInitializer implements WebApplicationInitializer {
     	// Create the 'root' Spring application context
         AnnotationConfigWebApplicationContext rootContext = 
         		new AnnotationConfigWebApplicationContext();
-        rootContext.register(SecurityConfig.class);
- 
+
         // Manage the lifecycle of the root application context
         container.addListener(new ContextLoaderListener(rootContext));
  
