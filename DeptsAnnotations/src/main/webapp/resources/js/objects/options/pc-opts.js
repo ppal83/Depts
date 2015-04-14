@@ -12,7 +12,7 @@ function getPageControllerOpts() {
         events: [
             { event: "DrawEmpsList", objToShow: "empsTDrawer" },
             { event: "DrawDeptsList", objToShow: "deptsTDrawer" },
-            { event: "DrawDeptAddForm", objToShow: "deptAddFormGenerator", id: 0 },
+            { event: "DrawDeptAddForm", objToShow: "deptAddFormGenerator" },
             { event: "DrawDeptEditForm", objToShow: "deptEditFormGenerator" },
             { event: "DrawEmpAddForm", objToShow:  "empAddFormGenerator" },
             { event: "DrawEmpEditForm", objToShow:  "empEditFormGenerator" }

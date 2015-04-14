@@ -20,7 +20,6 @@
 
 
 <script src="<c:url value = "/resources/js/objects/SupportObject.js" />"></script>
-<script src="<c:url value = "/resources/js/objects/PCSupportObject.js" />"></script>
 <script src="<c:url value = "/resources/js/objects/DataSource.js" />"></script>
 <script src="<c:url value = "/resources/js/objects/TableDrawer.js" />"></script>
 <script src="<c:url value = "/resources/js/objects/FormsGenerator.js" />"></script>
