@@ -2,51 +2,53 @@ define(["objects/DataSource"], function(DataSource) {
 
     return DataSource.extend({
 
-        init: function (name, options) {
+        init: function(name, options) {
             this._super(name, options);
             var self = this;
-            $.each(this.opts.events, function () {
+            $.each(this.opts.events, function() {
                 self["fire" + this] = self.fireOnPageController(this);
             });
             this.subscribeToUpdate();
         },
 
-        subscribeToUpdate: function () {
-            this._super(function () {
+        subscribeToUpdate: function() {
+            this._super(function() {
                 this.draw();
             }, this);
         },
 
-        show: function (id) {
+        show: function(id) {
             this._super();
             this.$id = id;
             this.loadAllFields(id);
         },
 
-        addToContainer: function () {
+        addToContainer: function() {
             this.opts.$containerForm.append(this.$table);
             this.opts.$container.append(this.opts.$containerForm);
             return this;
         },
 
-        clearContainer: function () {
+        clearContainer: function() {
             this._super();
             this.opts.$containerForm.empty();
             return this;
         },
 
-        addFields: function () {
+        addFields: function() {
             var self = this, i = 0;
 
-            $.each(this.dataArray, function (k, v) {
+            $.each(this.dataArray, function(k, v) {
                 var $tr = $("<tr>");
 
-                $("<td>").append($("<label>")
+                //adding label field
+                $("<td>").append( $("<label>")
                     .addClass("form-control")
-                    .attr("for", k).html(self.opts.labels[i++]))
+                    .attr("for", k).html(self.opts.labels[i++]) )
                     .appendTo($tr);
 
-                $("<td>").append($("<input>")
+                //adding input field
+                $("<td>").append( $("<input>")
                     .addClass("form-control")
                     .attr({
                         "value": k == "dept" ? v.name : v,
@@ -54,9 +56,13 @@ define(["objects/DataSource"], function(DataSource) {
                         "placeholder": k == "birthDate" ||
                         k == "hireDate" ? "yyyy-MM-dd" : ""
                     })
-                    .prop("readonly", k == "id"))
+                    .prop("readonly", k == "id") )
                     .appendTo($tr);
-                $("<td>").append($("<span>").addClass("error")).appendTo($tr);
+
+                //adding error field for validation
+                $("<td>").append($("<span>")
+                    .addClass("error"))
+                    .appendTo($tr);
 
                 $tr.appendTo(self.$table);
             });
@@ -64,30 +70,31 @@ define(["objects/DataSource"], function(DataSource) {
             return this;
         },
 
-        addOuterButtons: function () {
+        addOuterButtons: function() {
             var self = this;
 
-            $.each(this.opts.outerButtons, function () {
+            $.each(this.opts.outerButtons, function() {
                 var $tr = $("<tr>");
                 var btn = this.isButton ? $("<button>") : $("<a>");
 
                 $("<td>").attr("colspan", 2)
-                    .append(btn.addClass(this.classes)
+                    .append( btn.addClass(this.classes)
                         .html(this.value)
-                        .click(this.clicked(self)))
+                        .click(this.clicked(self)) )
                     .appendTo($tr);
 
                 $tr.appendTo(self.$table);
             });
+
             return this;
         },
 
-        validate: function () {
+        validate: function() {
             this.opts.validate(this);
             return this;
         },
 
-        draw: function () {
+        draw: function() {
             this.clearContainer()
                 .addTitle()
                 .createTable()
@@ -97,13 +104,13 @@ define(["objects/DataSource"], function(DataSource) {
                 .validate();
         },
 
-        loadAllFields: function (id) {
+        loadAllFields: function(id) {
             var self = this;
             if (id) {
                 $.getJSON(this.opts.loadAllFieldsURL + id,
-                    function (data) {
+                    function(data) {
                         self.setData(data);
-                    }).done(function () {
+                    }).done(function() {
                         self.fireUpdate();
                     });
             } else {
@@ -112,11 +119,11 @@ define(["objects/DataSource"], function(DataSource) {
             }
         },
 
-        updateRow: function () {
+        updateRow: function() {
             var self = this;
             var jsonObject = {id: this.$id};
 
-            $.each(this.dataArray, function (k) {
+            $.each(this.dataArray, function(k) {
                 if (k == "dept") {
                     jsonObject[k] = {name: $("#" + k).val()}
                 } else {
@@ -131,7 +138,7 @@ define(["objects/DataSource"], function(DataSource) {
                 dataType: "json",
                 contentType: "application/json",
                 data: JSON.stringify(jsonObject),
-                success: function () {
+                success: function() {
                     self.fireDrawDeptsList();
                 }
             });

@@ -2,83 +2,81 @@ define(["objects/DataSource", "util/date-format"], function(DataSource) {
 
     return DataSource.extend({
 
-        init: function (name, options) {
+        init: function(name, options) {
             this._super(name, options);
             var self = this;
-            $.each(this.opts.events, function () {
+            $.each(this.opts.events, function() {
                 self["fire" + this] = self.fireOnPageController(this);
             });
             this.subscribeToUpdate();
         },
 
-        subscribeToUpdate: function () {
-            this._super(function () {
+        subscribeToUpdate: function() {
+            this._super(function() {
                 this.draw();
             }, this);
         },
 
-        show: function (id) {
+        show: function(id) {
             this._super();
             this.loadAllRows(id);
         },
 
-        addHeader: function () {
+        addHeader: function() {
             var $tr = $("<tr>");
-            var self = this;
-            $.each(this.opts.headers, function (i) {
-                var $th = $("<th>");
-                $tr.append($th.html(self.opts.headers[i]));
+            $.each(this.opts.headers, function() {
+                $tr.append( $("<th>").html(this) );
             });
             this.$table.append($tr);
             return this;
         },
 
-        addRow: function (element) {
+        addRow: function(element) {
             var $tr = $("<tr>");
             $.each(element, function (k, v) {
                 if (k == "birthDate" || k == "hireDate") {
                     v = new Date(v).format("yyyy-mm-dd");
-                }
-
-                if (k == "dept") {
+                } else if (k == "dept") {
                     v = v.name;
                 }
-                $tr.append($("<td>").html(v));
+                $tr.append( $("<td>").html(v) );
             });
 
             this.addInnerButtons($tr, element.id);
             this.$table.append($tr);
         },
 
-        addRows: function () {
-            $.each(this.dataArray, $.proxy(function (i, e) {
+        addRows: function() {
+            $.each( this.dataArray, $.proxy(function(i, e) {
                 this.addRow(e);
-            }, this));
+            }, this) );
             return this;
         },
 
-        addInnerButtons: function ($tr, id) {
-            var btns = this.opts.innerButtons;
-            if (!btns) return;
-            for (var i = 0; i < btns.length; i++) {
-                var self = this;
+        addInnerButtons: function($tr, id) {
+            if ( !this.opts.innerButtons ) return;
+            var self = this;
 
-                $("<td>").append($("<a>").addClass(btns[i].classes)
-                    .html(btns[i].value)
-                    .click(btns[i].clicked(self, id)))
+            $.each(this.opts.innerButtons, function() {
+                $("<td>").append( $("<a>").addClass(this.classes)
+                    .html(this.value)
+                    .click(this.clicked(self, id)) )
                     .appendTo($tr);
-            }
+            });
+
         },
 
-        addOuterButtons: function () {
+        addOuterButtons: function() {
             var self = this;
-            $.each(this.opts.outerButtons, function () {
-                $("<a>").addClass(this.classes).html(this.value)
-                    .click(this.clicked(self)).appendTo(self.opts.$container);
+            $.each(this.opts.outerButtons, function() {
+                $("<a>").addClass(this.classes)
+                    .html(this.value)
+                    .click(this.clicked(self))
+                    .appendTo(self.opts.$container);
             })
         },
 
-        draw: function () {
+        draw: function() {
             this.clearContainer()
                 .addTitle()
                 .createTable()
@@ -88,20 +86,20 @@ define(["objects/DataSource", "util/date-format"], function(DataSource) {
                 .addOuterButtons();
         },
 
-        loadAllRows: function (id) {
+        loadAllRows: function(id) {
             var self = this;
             $.getJSON(this.opts.loadAllRowsURL + ( !!id ? "/" + id : "" ),
-                function (data) {
+                function(data) {
                     self.setData(data);
-                }).done(function () {
-                    self.fireUpdate()
+                }).done(function() {
+                    self.fireUpdate();
                 });
         },
 
-        deleteRow: function (id) {
+        deleteRow: function(id) {
             var self = this;
             $.getJSON(this.opts.deleteRowURL + id)
-                .done(function (data) {
+                .done(function(data) {
                     self.loadAllRows(data.dept ? data.dept.id : "");
                 });
         }
