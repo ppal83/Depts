@@ -1,15 +1,18 @@
-var DataSource = SupportObject.extend({
+define(["objects/SupportObject"], function(SupportObject) {
 
-    fireUpdate: function() {
-        this.fire("updated");
-    },
+    return SupportObject.extend({
 
-    subscribeToUpdate: function(fx, scope) {
-        this.subscribe("updated", fx, scope);
-    },
+        fireUpdate: function () {
+            this.fire("updated");
+        },
 
-    setData: function (data) {
-        this.dataArray = data;
-    }
+        subscribeToUpdate: function (fx, scope) {
+            this.subscribe("updated", fx, scope);
+        },
 
+        setData: function (data) {
+            this.dataArray = data;
+        }
+
+    })
 });

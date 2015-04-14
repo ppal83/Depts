@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="<c:url value="/resources/theme/css/bootstrap.min.css" />" />
     <link rel="stylesheet" href="<c:url value="/resources/theme/css/bs.css" />" />
 
-    <script src="<c:url value = "/resources/js/lib/jquery-2.1.3.js" />"></script>
+    <script src="<c:url value = "/resources/js/lib/jquery-2.1.3.min.js" />"></script>
     <script src="<c:url value = "/resources/js/lib/bootstrap.min.js" />"></script>
     <script src="<c:url value = "/resources/js/util/navbar-correct.js" />"></script>
 

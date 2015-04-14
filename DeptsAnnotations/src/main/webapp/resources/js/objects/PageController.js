@@ -1,36 +1,39 @@
-var PageController = Class.extend({
+define(["class-extend"], function() {
 
-    init: function (name, options) {
-        this.name = name;
-        this.opts = options;
-        this.addModules();
-        this.subscribeToEvents();
-    },
+    return Class.extend({
 
-    setOpts: function(options) {
-        this.opts = options;
-        return this;
-    },
+        init: function (name, options) {
+            this.name = name;
+            this.opts = options;
+            this.addModules();
+            this.subscribeToEvents();
+        },
 
-    addModules: function() {
-        var self = this;
-        $.each(this.opts.modules, function() {
-            self[this.name] = this;
-            self[this.name].setPageController(self);
-        });
-    },
+        setOpts: function (options) {
+            this.opts = options;
+            return this;
+        },
 
-    subscribeToEvents: function() {
-        var self = this;
-        $.each(this.opts.events, function() {
-            var objToShow = this.objToShow;
-            $(self).on(this.event, function (event, id) {
-                $.each(self.opts.modules, function() {
-                    self[this.name].hide();
-                });
-                self[objToShow].show(id);
+        addModules: function () {
+            var self = this;
+            $.each(this.opts.modules, function () {
+                self[this.name] = this;
+                self[this.name].setPageController(self);
             });
-        });
-    }
+        },
 
+        subscribeToEvents: function () {
+            var self = this;
+            $.each(this.opts.events, function () {
+                var objToShow = this.objToShow;
+                $(self).on(this.event, function (event, id) {
+                    $.each(self.opts.modules, function () {
+                        self[this.name].hide();
+                    });
+                    self[objToShow].show(id);
+                });
+            });
+        }
+
+    });
 });
