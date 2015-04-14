@@ -43,7 +43,7 @@ define(["class-extend"], function() {
         },
 
         addTitle: function () {
-            this.opts.$container.append($("<h2>").html(this.opts.title));
+            this.opts.$container.append( $("<h2>").html(this.opts.title) );
             return this;
         },
 
@@ -53,7 +53,7 @@ define(["class-extend"], function() {
         },
 
         subscribe: function (event, fx, scope) {
-            $(this).on(event, $.proxy(fx, scope));
+            $(this).on( event, $.proxy(fx, scope) );
         },
 
         fire: function (event, data) {
